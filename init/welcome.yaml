@@ -1,0 +1,236 @@
+settings:
+  name: welcome
+  title: '#_name#'
+  loglevel: 6
+tree:
+- name: source-code
+  values:
+    code: |-
+      SetVar("tempdir", TempDir())
+      %body%
+  children:
+  - name: set-variable
+    values:
+      list:
+      - func: now
+        param: ""
+      name: now
+- name: set-variables
+  values:
+    list:
+    - type: "2"
+      value: |
+        <h2 style="color: #1565C0;">#welcome.head#</h2>
+      var: head
+    - type: "2"
+      value: "1"
+      var: showinfo
+    - value: |
+        <table>
+        <tr><td>Now:&nbsp;</td><td><b>#now#</b></td></tr>
+        <tr><td>Eonza path:&nbsp;</td><td><b>#.apppath#</b></td></tr>
+        <tr><td>Temporary path:&nbsp;</td><td><b>#tempdir#</b></td></tr>
+        </table>
+      var: info
+    - type: "2"
+      value: '#welcome.sites#'
+      var: gettitle
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: head
+    - options: ""
+      text: ""
+      type: "6"
+      var: info
+    - options: ""
+      text: '#welcome.name#'
+      type: "2"
+      var: name
+    - options: ""
+      text: '#welcome.showinfo#'
+      type: "0"
+      var: showinfo
+    - options: ""
+      text: '#welcome.nfy#'
+      type: "0"
+      var: sendnfy
+    - options: ""
+      text: '#welcome.readme#'
+      type: "0"
+      var: readme
+- name: notification
+  values:
+    _ifcond: sendnfy
+    text: |
+      Hi, #name#
+      Welcome to Eonza!
+      <b>Official site:</b> <a href="https://www.eonza.org" target="_blank">eonza.org</a>
+- name: message
+  values:
+    _ifcond: showinfo
+    custbtns: {}
+    icon: info-circle
+    retbtn: msgbtn
+    text: '#welcome.hello#'
+- name: readme
+  values:
+    _ifcond: readme
+    text: |
+      ## Create scripts and automate IT tasks
+
+      The **Eonza** automation tool is used to create scripts and automate tasks on a computer. It is a free and open source cross-platform program that can help you increase productivity and save time. The program and scripts have a responsive and intuitive interface accessible in your browser. You can use Eonza not only on a desktop computer, but also on a remote server or VPS/VDS hosting. In this case, you can **manage servers from any browser on any device**.
+
+      * Creating scripts does not require knowledge of programming languages.
+      * There is a constantly updated library of built-in scripts.
+      * Protection by password and using a "white list" of IP-addresses.
+      * Quick search for scripts.
+      * You can launch scripts from the console.
+      * There is a scheduler and a task manager.
+      * Saving logs and console output for each completed task.
+      * Launch your favorite scripts from the system tray menu.
+      * Export/import of scripts to/from a text YAML file.
+      * It is possible to suspend, resume and terminate script execution.
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: gettitle
+    - options: |-
+        {"items":[{"title":"Apple", "value": "https://www.apple.com"},
+        {"title":"Microsoft", "value": "https://www.microsoft.com"},
+        {"title":"Wikipedia", "value": "https://www.wikipedia.org"},
+        {"title":"Google", "value": "https://www.google.com"}]}
+      text: ""
+      type: "3"
+      var: defsite
+    - options: ""
+      text: URL
+      type: "2"
+      var: site
+    - options: '{"initial":"skip"}'
+      text: '#.skip#'
+      type: "7"
+      var: btn
+    - options: '{"initial":"continue", "default": "true"}'
+      text: '#.continue#'
+      type: "7"
+      var: btn
+- name: foreach-file
+  open: true
+  values:
+    onlyfiles: true
+    path: '#.apppath#'
+    recursive: "true"
+    varname: ifile
+  children:
+  - name: source-code
+    open: true
+    values:
+      code: |-
+        str apath = Macro("#.apppath#")
+        str dir = Macro("#ifile.dir#")
+        if *dir > *apath {
+            dir = Right(dir, *dir - *apath-1)
+            SetVar("ifile", JoinPath(dir, GetVar("ifile")))
+        }
+  - name: set-variable
+    values:
+      list:
+      - func: append
+        param: '#ifile# | #ifile.size#&nbsp;| #ifile.time##.r##.n#'
+      name: flist
+      subst: "0"
+- name: create-report
+  values:
+    body: |+
+      # List of Eonza files
+
+      Eonza folder: **#.apppath#**
+      Filename | Size |Time
+      --------|-------|-------
+      #flist#
+
+
+    format: "0"
+    title: Eonza File List
+- name: exit.eonza
+  values:
+    _ifcond: GetVar("btn") == "skip"
+    timeout: "1000"
+- name: set-variable
+  values:
+    _ifcond: '*GetVar("site") == 0'
+    list: {}
+    name: site
+    value: '#defsite#'
+- name: get-webpage
+  values:
+    url: '#site#'
+    varname: answer
+- name: set-variable
+  values:
+    list:
+    - func: length
+      param: ""
+    name: size
+    subst: "0"
+    value: '#answer#'
+- name: parse-html
+  values:
+    html: '#answer#'
+    selectors:
+    - attrib: ""
+      selector: title
+      var: title
+    - attrib: content
+      func: abspath
+      selector: meta[name="description"]
+      var: desc
+- name: set-variable
+  values:
+    list: []
+    name: webpage
+    subst: "0"
+    value: |
+      Page size: #size#
+      Title: #title#
+      Description: #desc#
+- name: write-console
+  values:
+    text: '#webpage#'
+- name: create-report
+  values:
+    body: '#webpage#'
+    title: Web-page info
+- name: sleep.eonza
+  values:
+    timeout: "1000"
+langs:
+  en:
+    _name: Welcome
+    welcome.head: Welcome to the Eonza demo script!
+    welcome.hello: |
+      Hello, #name#,<br>
+      We are glad that you have decided to try the Eonza program.
+    welcome.name: Enter your name
+    welcome.nfy: Send notification
+    welcome.readme: Show Readme
+    welcome.showinfo: Show greeting
+    welcome.sites: Select a site to get the title or specify your own
+  ru:
+    _name: Добро пожаловать
+    welcome.head: Добро пожаловать в демонстрационный скрипт программы Eonza!
+    welcome.hello: |-
+      Добрый день, #name#, <br>
+      Мы рады, что вы решили попробовать программу Eonza.
+    welcome.name: Укажите ваше имя
+    welcome.nfy: Отправить уведомление
+    welcome.readme: Показать Readme
+    welcome.showinfo: Показать приветствие
+    welcome.sites: Выберите сайт для получения заголовка или укажите свой
