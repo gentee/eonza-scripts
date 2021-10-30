@@ -1,2 +1,2 @@
 # eonza-scripts
-Scripts for Eonza automation software
+Scripts for [Eonza automation](https://www.eonza.org) software.
