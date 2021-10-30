@@ -1,0 +1,36 @@
+settings:
+  name: file-hash
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.cryptography#"  
+  loglevel: 6
+  unrun: true
+  help: file-hash
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: algorithm
+  title: '#.algorithm#'
+  type: 3
+  options:
+    items:
+    - title: MD5
+    - title: SHA256
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Find hash of the file
+    _name: File Hash
+  ru:
+    _desc: Найти хэш файла
+    _name: Хэш файла
+code: "str hash \nswitch algorithm \ncase \"MD5\": hash = Md5File(filename)\ncase
+  \"SHA256\": hash = Sha256File(filename)\nSetVar(resultvar, hash)"

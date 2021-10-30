@@ -1,0 +1,63 @@
+settings:
+  name: append-to-map
+  title: '#_name#'
+  path: '#.stdlib#/#.variables#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: append-to-map
+  helplang: ru
+params:
+- name: name
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+    flags: nomacro
+- name: key
+  title: '#_key#'
+  type: 2
+  options:
+    required: true
+- name: value
+  title: '#.value#'
+  type: 1
+  options:
+    flags: nomacro
+- name: subst
+  title: '#_subst#'
+  type: 3
+  options:
+    initial: "1"
+    default: "1"
+    type: int
+    items:
+    - title: '#.no#'
+      value: "0"
+    - title: '#_everywhere#'
+      value: "3"
+    - title: '#_onlyvalue#'
+      value: "1"
+    - title: '#_onlyvar#'
+      value: "2"
+langs:
+  en:
+    _desc: Append item to map
+    _everywhere: Everywhere
+    _key: Key
+    _name: Append To Map
+    _onlyvalue: Only in the Value
+    _onlyvar: Only in the Variable Name
+    _subst: Substitute Variable Values
+  ru:
+    _desc: Добавить элемент к хэш-массиву
+    _everywhere: Везде
+    _key: Ключ
+    _name: Добавить к хэш-массиву
+    _onlyvalue: Только в значении
+    _onlyvar: Только в имени переменной
+    _subst: Заменить значения переменных
+code: |-
+  if subst & 1 == 1 :  value = Macro(value)
+  if subst & 2 == 2 : name = Macro(name)
+  AppendToMap(name, key, value)

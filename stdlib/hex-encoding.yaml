@@ -1,0 +1,49 @@
+settings:
+  name: hex-encoding
+  title: '#_name#'
+  path: '#.stdlib#/#.encoding#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: hex-encoding
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: encoding
+  title: '#_encoding#'
+  type: 3
+  options:
+    initial: "0"
+    type: int
+    items:
+    - title: '#_tohex#'
+      value: "0"
+    - title: '#_fromhex#'
+      value: "1"
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+langs:
+  en:
+    _desc: Hexadecimal encoding and decoding
+    _encoding: Encoding
+    _fromhex: From hexadecimal string to bytes
+    _name: Hex Encoding
+    _tohex: From bytes to hexadecimal string
+  ru:
+    _desc: Шестнадцатеричное кодирование и декодирование
+    _encoding: Конвертация
+    _fromhex: Из шестнадцатеричной строки в байты
+    _name: Hex кодирование
+    _tohex: Из байт в шестнадцатеричную строку
+code: |
+  str src = GetVarBytes(varname)
+  str tmp
+  if encoding? :  tmp = str(UnHex(src))
+  else : tmp = Hex(buf(src))
+  if *resultvar == 0 : resultvar = varname
+  SetVar(resultvar, tmp)

@@ -1,0 +1,34 @@
+settings:
+  name: foreach-line-file
+  title: '#_name#'
+  path: '#.stdlib#/#.text#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: foreach-line-file
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Process each line in the file
+    _name: Foreach Line in File
+  ru:
+    _desc: Обработать каждую строку в файле
+    _name: Для каждой строки файла
+code: |-
+  handle fline = ReadLines(filename)
+  while ScanLines(fline) {
+        SetVar(varname, GetLine(fline))
+        %body%
+  }
+  CloseLines(fline)

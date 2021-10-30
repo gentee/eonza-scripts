@@ -1,0 +1,42 @@
+settings:
+  name: foreach-csv
+  title: '#_name#'
+  path: '#.stdlib#/#.encoding#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: foreach-line-csv
+  helplang: ru
+params:
+- name: csvfile
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: delim
+  title: '#.delimiter#'
+  type: 2
+- name: columns
+  title: '#_columns#'
+  type: 2
+langs:
+  en:
+    _columns: Columns
+    _desc: Read CSV line by line
+    _name: Foreach Line in CSV
+  ru:
+    _columns: Колонки
+    _desc: Прочитать CSV построчно
+    _name: Для каждой строки в CSV
+code: |
+  handle hcsv = OpenCSV(csvfile, delim, columns)
+  while ReadCSV(hcsv) {
+        SetVar(varname, GetCSV(hcsv))
+        %body%
+  }
+  CloseCSV(hcsv)

@@ -1,0 +1,46 @@
+settings:
+  name: foreach-xlsx
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: foreach-xlsx
+  helplang: ru
+params:
+- name: xlsxfile
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: columns
+  title: '#_columns#'
+  type: 2
+- name: sheet
+  title: '#_sheet#'
+  type: 2
+langs:
+  en:
+    _columns: Columns
+    _desc: Read XLSX row by row
+    _name: Foreach Row in XLSX
+    _sheet: Sheet Name
+  ru:
+    _columns: Колонки
+    _desc: Прочитать XLSX построчно
+    _name: Для каждой ряда в XLSX
+    _sheet: Имя листа
+code: |+
+  handle hxlsx = OpenXLSX(xlsxfile)
+  if !*sheet? : sheet = XlsxSheetName(hxlsx, 0)
+  handle rows = XlsxRows(hxlsx, sheet, columns)
+  while XlsxNextRow(rows) {
+        SetVar(varname, XlsxGetRow(rows))
+        %body%
+  }
+

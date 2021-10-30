@@ -1,0 +1,27 @@
+settings:
+  name: source-code
+  title: '#.sourcecode#'
+  desc: '#_desc#' 
+  path: "#.stdlib#/#.programming#"
+  help: source-code
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: external
+  title: '#_external#'
+  type: 0
+- name: code
+  title: '#.sourcecode#'
+  type: 1
+  options: 
+    initial: "%body%"
+    default: "%body%"
+langs:
+  en:
+    _desc: Execute code in Gentee script language
+    _external: External source code
+  ru:
+    _desc: Выполнить Gentee скрипт
+    _external: Внешний исходный код
+   

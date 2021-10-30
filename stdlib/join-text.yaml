@@ -1,0 +1,34 @@
+settings:
+  name: join-text
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.text#"  
+  loglevel: 6
+  unrun: true
+  help: join-text
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: delim
+  title: '#.delimiter#'
+  type: 2
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: |
+      Join text values
+    _name: Join Text
+  ru:
+    _desc: Объединить строки
+    _name: Объединить текст
+code: |
+  arr items = arrstr(GetVarObj(varname))
+  SetVar(resultvar, Join(items, delim))

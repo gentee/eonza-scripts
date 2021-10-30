@@ -1,0 +1,80 @@
+settings:
+  name: file-list
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: file-list
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: recursive
+  title: '#.recursive#'
+  type: 0
+  options:
+    initial: "true"
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+- name: onlydirs
+  title: '#.searchdirs#'
+  type: 0
+  options:
+    optional: true
+- name: onlyfiles
+  title: '#.searchfiles#'
+  type: 0
+  options:
+    optional: true
+tree:
+- name: source-code
+  open: true
+  values:
+    code: |-
+      arr.obj  list
+      obj ret &= obj(list)
+      SetVar(`filelist`, ret)
+      %body%
+      ResultVar(GetVar("resultvar"), ret)
+  children:
+  - name: foreach-file
+    open: true
+    values:
+      _advanced: |-
+        params:
+            recursive: "#recursive#"
+            onlyfiles: "#onlyfiles#"
+      path: '#path#'
+      pattern: '#pattern#'
+      ignore: '#ignore#'
+      recursive: false
+      varname: fi
+      _optional: |-
+         onlydirs: "#onlydirs#"
+    children:
+    - name: source-code
+      open: true
+      values:
+        code: |
+          obj iobj &= GetVarObj("filelist")
+          iobj += GetVarObj("fi")
+langs:
+  en:
+    _desc: Get file list into object variable
+    _name: File List
+  ru:
+    _desc: Получить список файлов в переменную объект
+    _name: Список файлов

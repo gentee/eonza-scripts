@@ -1,0 +1,15 @@
+settings:
+  name: url.title
+  title: Copy URL & Title
+  path: '#.tests#'
+  desc: Copy URL and Title into Clipboard (for Chrome extension)
+  loglevel: 6
+tree:
+- name: parse-json
+  values:
+    _ifcond: '*Macro("#.data#") > 0 '
+    resultvar: data
+    value: '#.data#'
+- name: copy-to-clipboard
+  values:
+    text: '#data.url# #data.title# '

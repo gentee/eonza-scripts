@@ -1,0 +1,27 @@
+settings:
+  name: return.eonza
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.programming#"
+  loglevel: 6
+  unrun: true
+  help: return
+  helplang: ru
+params:
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+- name: value
+  title: '#.value#'
+  type: 1
+langs:
+  en:
+    _desc: Return from the script
+    _name: Return
+  ru:
+    _desc: Возвратиться из скрипта
+    _name: Возвратиться
+code: |-
+  if *resultvar? : ResultVar(resultvar, value)
+  error(RETURN, ``)
+

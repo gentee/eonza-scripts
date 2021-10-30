@@ -1,0 +1,58 @@
+settings:
+  name: send-email
+  title: '#_name#'
+  path: '#.stdlib#/#.messaging#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: send-email
+  helplang: ru
+params:
+- name: smtpserver
+  title: '#_smtpserver#'
+  type: 2
+  options:
+    required: true
+- name: from
+  title: '#_from#'
+  type: 2
+- name: to
+  title: '#_to#'
+  type: 2
+  options:
+    required: true
+- name: subject
+  title: '#_subject#'
+  type: 2
+  options:
+    required: true
+- name: body
+  title: '#_body#'
+  type: 1
+  options:
+    required: true
+langs:
+  en:
+    _body: Body
+    _desc: Send email
+    _from: From
+    _name: Send Email
+    _smtpserver: SMTP Server
+    _subject: Subject
+    _to: To
+  ru:
+    _body: Содержимое письма
+    _desc: Отправить электронное письмо
+    _from: От
+    _name: Отправить письмо
+    _smtpserver: SMTP сервер
+    _subject: Тема письма
+    _to: Кому
+code: |-
+  map email
+  email["from"] = from
+  email["to"] = to
+  email["subject"] = subject
+  email["body"] = body
+  SendEmail(GetVarObj(smtpserver), obj(email))
+  LogOutput(LOG_INFO, "=> send-email(\{from},\{to},\{subject})")

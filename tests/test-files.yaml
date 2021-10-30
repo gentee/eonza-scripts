@@ -1,0 +1,628 @@
+settings:
+  name: test-files
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+params:
+- name: dir
+  title: '#_dir#'
+  type: 2
+tree:
+- name: source-code
+  values:
+    _desc: Set file and dir names
+    code: '%body%'
+  children:
+  - name: set-variables
+    values:
+      list:
+      - value: |-
+          This is a short text text.
+          Это тестовое сообщение.
+        var: short
+      - value: test password
+        var: psw
+      - value: aut_o i_n_c (тест).inc.txt
+        var: autoinc
+      - value: '*'
+        var: star
+      - value: aut_o i_n_c (тест)
+        var: incname
+      - value: Ver
+        var: towrite
+  - name: write-console
+    values:
+      text: Test files scripts...
+  - name: curdir
+    values:
+      _ifcond: '*GetVar("dir") == 0'
+      varname: dir
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: eonza-test
+      name: testpath
+      subst: "0"
+      value: '#dir#'
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: short.txt
+      name: shortfile
+      subst: "0"
+      value: '#testpath#'
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: file10.bin
+      name: file10
+      subst: "0"
+      value: '#testpath#'
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: sub path
+      name: subpath
+      subst: "0"
+      value: '#testpath#'
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: short.txt.ec
+      name: shortdec
+      subst: "0"
+      value: '#subpath#'
+  - name: set-variable
+    values:
+      list:
+      - func: escapefile
+        param: ""
+      name: incfile
+      subst: "0"
+      value: aut:o i\n/c (тест).inc.txt
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: '#incfile#'
+      name: incfile
+      subst: "0"
+      value: '#subpath#'
+- name: source-code
+  values:
+    _desc: Path
+    code: '%body%'
+  children:
+  - name: parse-filename
+    values:
+      filename: myfile
+      varname: mf
+  - name: parse-filename
+    values:
+      filename: mypath/дата.txt
+      varname: df
+  - name: parse-filename
+    values:
+      _ifcond: GetConst("os") == "windows"
+      filename: C:\папка\log234.tar.gz
+      varname: wf
+  - name: parse-filename
+    values:
+      _ifcond: GetConst("os") != "windows"
+      filename: /home/usr/папка/log234.tar.gz
+      varname: wf
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: ""
+        var: mf.dir
+      - cmp: equal
+        not: false
+        value: myfile
+        var: mf.filename
+      - cmp: equal
+        not: false
+        value: ""
+        var: mf.ext
+      - cmp: equal
+        not: false
+        value: mypath
+        var: df.dir
+      - cmp: equal
+        not: false
+        value: дата.txt
+        var: df.filename
+      - cmp: equal
+        not: false
+        value: txt
+        var: df.ext
+      - cmp: equal
+        not: false
+        value: дата
+        var: df.fileonly
+      - cmp: equal
+        not: false
+        value: log234.tar.gz
+        var: wf.filename
+      - cmp: equal
+        not: false
+        value: log234.tar
+        var: wf.fileonly
+      - cmp: equal
+        not: false
+        value: gz
+        var: wf.ext
+  - name: assertions
+    values:
+      _ifcond: GetConst("os") == "windows"
+      list:
+      - cmp: equal
+        not: false
+        value: C:\папка
+        var: wf.dir
+  - name: assertions
+    values:
+      _ifcond: GetConst("os") != "windows"
+      list:
+      - cmp: equal
+        not: false
+        value: /home/usr/папка
+        var: wf.dir
+- name: if.eonza
+  values:
+    list:
+    - cmp: fileexists
+      next: "0"
+      not: false
+      value: ""
+      var: testpath
+  children:
+  - name: message
+    values:
+      custbtns: {}
+      icon: question-circle
+      retbtn: msgbtn
+      text: '#testpath# exists. Remove it and continue?'
+  - name: error.eonza
+    values:
+      _ifcond: GetVar("msgbtn") == "no"
+      code: "145"
+      text: '#testpath# exists. It must not be existed!'
+  - name: delete-dir
+    values:
+      path: '#testpath#'
+- name: create-dir
+  values:
+    path: '#subpath#'
+- name: write-file
+  values:
+    filename: '#shortfile#'
+    name: short
+- name: delete-file
+  values:
+    onlyexist: true
+    path: unknown.file
+- name: source-code
+  values:
+    _desc: Auto increment
+    code: '%body%'
+  children:
+  - name: set-variable
+    values:
+      list: {}
+      name: incoriginal
+      subst: "1"
+      value: '#incfile#'
+  - name: for.eonza
+    open: true
+    values:
+      final: "4"
+      index: index
+      initial: "1"
+    children:
+    - name: auto-increment-filename
+      values:
+        filename: '#incfile#'
+        resultvar: incfile
+    - name: write-file
+      values:
+        filename: '#incfile#'
+        name: index
+  - name: read-file
+    values:
+      filename: '#incoriginal#'
+      name: incout
+  - name: auto-increment-filename
+    values:
+      filename: '#incoriginal#'
+      resultvar: incfile
+  - name: write-file
+    values:
+      filename: '#incfile#'
+      name: star
+  - name: for.eonza
+    open: true
+    values:
+      final: "4"
+      index: index
+      initial: "1"
+    children:
+    - name: read-file
+      values:
+        filename: '#subpath#/#incname# (#index#).inc.txt'
+        name: tmp
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#tmp#'
+        name: incout
+        subst: "1"
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: 1234*
+        var: incout
+- name: source-code
+  values:
+    _desc: Template
+    code: '%body%'
+  children:
+  - name: set-variables
+    values:
+      list:
+      - value: |-
+          User: #user#
+          Status: #status#
+        var: tpl
+  - name: write-file
+    values:
+      filename: '#testpath#/template.txt'
+      name: tpl
+  - name: set-variables
+    values:
+      list:
+      - value: Alex Strong
+        var: user
+      - value: Active
+        var: status
+  - name: create-file-from-template
+    values:
+      outputfile: '#testpath#/tpl1.txt'
+      template: <#testpath#/template.txt>
+  - name: set-variable
+    values:
+      list: {}
+      name: tpl1
+      subst: "1"
+      value: '#tpl#'
+  - name: set-variables
+    values:
+      list:
+      - value: John Doe
+        var: user
+      - value: Disabled
+        var: status
+  - name: create-file-from-template
+    values:
+      outputfile: '#testpath#/tpl2.txt'
+      template: '#user# / #status#'
+  - name: read-file
+    values:
+      filename: '#testpath#/tpl1.txt'
+      name: tplres
+  - name: read-file
+    values:
+      filename: '#testpath#/tpl2.txt'
+      name: tpl2res
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: '#tpl1#'
+        var: tplres
+      - cmp: equal
+        not: false
+        value: John Doe / Disabled
+        var: tpl2res
+- name: source-code
+  values:
+    _desc: Copy & Move
+    code: '%body%'
+  children:
+  - name: create-dir
+    values:
+      path: '#testpath#/copy'
+  - name: create-dir
+    values:
+      path: '#testpath#/move'
+  - name: set-variables
+    values:
+      list:
+      - value: '#testpath#/copy'
+        var: copypath
+  - name: write-file
+    values:
+      filename: '#copypath#/short.txt'
+      name: short
+  - name: write-file
+    values:
+      filename: '#testpath#/without ext'
+      name: short
+  - name: write-file
+    values:
+      filename: '#testpath#/some.ext.txt'
+      name: short
+  - name: for.eonza
+    values:
+      final: "3"
+      initial: "1"
+    children:
+    - name: copy-file
+      values:
+        dest: '#copypath#'
+        ifexist: savecopy
+        src: '#shortfile#'
+    - name: copy-file
+      values:
+        dest: '#copypath#'
+        ifexist: savecopy
+        savetime: true
+        src: '#testpath#/without ext'
+    - name: copy-file
+      values:
+        dest: '#copypath#'
+        ifexist: savecopy
+        savetime: true
+        src: '#testpath#/some.ext.txt'
+  - name: directory-size
+    values:
+      path: '#copypath#'
+      resultvar: di
+  - name: move-file
+    values:
+      destpath: '#testpath#/move'
+      hideapply: "true"
+      ifexist: overwrite
+      path: '#copypath#'
+  - name: move-file
+    values:
+      destpath: '#testpath#/move/'
+      hideapply: "true"
+      ifexist: overwrite
+      path: '#testpath#/move/copy/short.txt'
+  - name: write-file
+    values:
+      filename: '#testpath#/move/copy/short.txt'
+      name: short
+  - name: move-file
+    values:
+      destpath: '#testpath#/move/'
+      hideapply: "true"
+      ifexist: savecopy
+      path: '#testpath#/move/copy/short.txt'
+  - name: write-file
+    values:
+      filename: '#testpath#/move/copy/short.txt'
+      name: short
+  - name: move-file
+    values:
+      destpath: '#testpath#/move/'
+      hideapply: "true"
+      ifexist: overwrite
+      path: '#testpath#/move/copy/short.txt'
+  - name: move-files
+    values:
+      destpath: '#testpath#/move'
+      ifexist: savecopy
+      ignore: /\(2\)/
+      path: '#testpath#/move/copy'
+      pattern: /\(\d\)/
+      recursive: "true"
+  - name: rename-file
+    values:
+      hideapply: "true"
+      ifexist: savecopy
+      newname: short.txt
+      path: '#testpath#/move/short (1) (1).txt'
+  - name: rename-files
+    values:
+      ifexist: savecopy
+      newname: .
+      path: '#testpath#/move/copy'
+      pattern: \s?\(2\)\.
+      recursive: "true"
+  - name: rename-files
+    values:
+      ifexist: savecopy
+      ignore: /\(2\)/
+      newname: ${1}
+      path: '#testpath#/move/copy'
+      pattern: (.+)[\.|\s]ext
+      recursive: "true"
+  - name: source-code
+    values:
+      code: |
+        arr ret
+        for item in ReadDir(Macro("#testpath#/move/copy")) {
+            ret += item.Name
+        }
+        Sort(ret)
+        SetVar("rlist", Join(ret, ","))
+  - name: directory-size
+    values:
+      path: '#testpath#/move'
+      resultvar: dim
+  - name: directory-size
+    values:
+      path: '#testpath#/move/copy'
+      resultvar: dimc
+  - name: assertions
+    values:
+      errmsg: copy & move
+      list:
+      - cmp: equal
+        not: false
+        value: "10"
+        var: di.files
+      - cmp: equal
+        not: false
+        value: "11"
+        var: dim.files
+      - cmp: equal
+        not: false
+        value: "1"
+        var: dim.dirs
+      - cmp: equal
+        not: false
+        value: "5"
+        var: dimc.files
+      - cmp: equal
+        not: false
+        value: short.txt,some (1).txt,some.txt,without,without ext (2)
+        var: rlist
+- name: source-code
+  values:
+    _desc: Test file 10MB
+    code: |-
+      buf b = buf(Repeat("This is a test string\r\n",100))
+      b += RandomBuf(4000)
+      for i in 1..100 {
+           b += buf("Line \{i}: тестовое сообщение\n")
+      }
+      b += buf(Hex(RandomBuf(5000)))
+      str file10 = GetVar("file10")
+      WriteFile(file10, b)
+      for i in 1..550 {
+          AppendFile(file10, b)
+      }
+      %body%
+  children:
+  - name: file-hash
+    values:
+      algorithm: MD5
+      filename: '#file10#'
+      resultvar: file10md5
+  - name: encrypt-file
+    values:
+      algorithm: AES-256
+      encfile: file10.binenc
+      filename: '#file10#'
+      password: '#psw#'
+  - name: delete-file
+    values:
+      path: '#file10#'
+  - name: decrypt-file
+    values:
+      decfile: ""
+      destpath: ""
+      filename: '#file10#enc'
+      password: '#psw#'
+  - name: file-hash
+    values:
+      algorithm: MD5
+      filename: '#file10#'
+      resultvar: file10decmd5
+  - name: assertions
+    values:
+      errmsg: File 10 MB
+      list:
+      - cmp: equal
+        not: false
+        value: '#file10decmd5#'
+        var: file10md5
+- name: file-hash
+  values:
+    algorithm: MD5
+    filename: '#shortfile#'
+    resultvar: md5short
+- name: encrypt-file
+  values:
+    algorithm: AES-256
+    destpath: '#subpath#'
+    encfile: ""
+    filename: '#shortfile#'
+    password: '#psw#'
+- name: decrypt-file
+  values:
+    decfile: short.txt.ec.txt
+    filename: '#shortdec#'
+    password: '#psw#'
+- name: file-hash
+  values:
+    algorithm: MD5
+    filename: '#shortdec#.txt'
+    resultvar: md5shortdec
+- name: file-hash
+  values:
+    algorithm: SHA256
+    filename: '#shortfile#'
+    resultvar: sha256short
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: 44baaf4f234ed2b74bd1a54ea343497b
+      var: md5short
+    - cmp: equal
+      not: false
+      value: 54779abc791a5129c5f15f0d6007cb139f99ca48fae41998c22aa32c7c00204f
+      var: sha256short
+    - cmp: equal
+      not: false
+      value: '#md5short#'
+      var: md5shortdec
+- name: write-file
+  values:
+    append: false
+    filename: '#shortfile#'
+    name: towrite
+    text: -#towrite#-
+- name: write-file
+  values:
+    append: true
+    filename: '#shortfile#'
+    name: ""
+    text: +#towrite#
+- name: read-file
+  values:
+    filename: '#shortfile#'
+    name: restowrite
+- name: delete-dir
+  values:
+    path: '#testpath#'
+- name: assertions
+  values:
+    list:
+    - cmp: fileexists
+      not: true
+      value: ""
+      var: testpath
+    - cmp: equal
+      not: false
+      value: '#towrite#-#towrite#-+Ver'
+      var: restowrite
+- name: write-console
+  values:
+    text: Success
+langs:
+  en:
+    _desc: Test files commands
+    _dir: Path for test folder
+    _name: Test - Files
+  ru:
+    _desc: Тест файловых скриптов
+    _dir: Путь для папки тестирования
+    _name: Тест - Файлы

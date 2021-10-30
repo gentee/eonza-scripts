@@ -1,0 +1,122 @@
+settings:
+  name: rename-files
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: rename-files
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: pattern
+  title: '#.regex#'
+  type: 2
+  options:
+    required: true
+- name: newname
+  title: '#.newfilename#'
+  type: 2
+  options:
+    required: true
+- name: ifexist
+  title: '#.iffileexist#'
+  type: 3
+  options:
+    initial: savecopy
+    items:
+    - title: '#.overwrite#'
+      value: overwrite
+    - title: '#.overwritenew#'
+      value: overwritenew
+    - title: '#.skip#'
+      value: skip
+    - title: '#.ask#'
+      value: ask
+    - title: '#.asknew#'
+      value: asknew
+    - title: '#.savecopy#'
+      value: savecopy
+- name: recursive
+  title: '#.recursive#'
+  type: 0
+  options:
+    initial: "true"
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+tree:
+- name: set-variable
+  values:
+    list:
+    - func: abspath
+      param: ""
+    name: path
+- name: file-list
+  values:
+    _advanced: |-
+      params:
+           recursive: "#recursive#"
+    _optional: 'onlyfiles: true'
+    ignore: '#ignore#'
+    path: '#path#'
+    pattern: /#pattern#/
+    recursive: false
+    resultvar: list
+- name: set-variable
+  values:
+    list:
+    - func: length
+      param: ""
+    name: count
+    value: list
+- name: source-code
+  open: true
+  values:
+    code: |2
+
+      obj iobj = GetVarObj("list")
+      int progress = ProgressStart(*iobj, 100, GetVar(`lng.renamefiles`), ``)
+      str pattern = GetVar("pattern")
+      str newname = GetVar("newname")
+      SetVar("mode", GetVar("ifexist"))
+      for item, index in arr(iobj) {
+              str fname = item(item, "name").str()
+              SetVar("filename", JoinPath(item(item, "dir").str(), fname))
+              SetVar("newfilename", ReplaceRegExp( fname, pattern, newname ))
+              %body%
+               str mode = GetVar("mode")
+                if HasPrefix(mode,"ask") {
+                     obj action = GetVarObj("action")
+                     if item(action, "all").bool() {
+                          SetVar("mode", item(action, "btn").str())
+                     }
+                }
+               Progress(progress, 1)
+       }
+      ProgressEnd(progress)
+  children:
+  - name: rename-file
+    values:
+      _advanced: |-
+        params:
+            ifexist: "#mode#"
+      _optional: |-
+        resultvar: action
+        hideapply: false
+      hideapply: "true"
+      ifexist: savecopy
+      newname: '#newfilename#'
+      path: '#filename#'
+langs:
+  en:
+    _desc: Rename files using a regular expression
+    _name: Rename Files
+    lng.renamefiles: Renaming files...
+  ru:
+    _desc: Переименовать файлы с помощью регулярного выражения
+    _name: Переименовать файлы
+    lng.renamefiles: Переименование файлов...

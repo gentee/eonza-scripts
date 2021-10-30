@@ -1,0 +1,28 @@
+settings:
+  name: create-file
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  loglevel: 4
+  unrun: true
+  help: create-file
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: trunc
+  title: '#_trunc#'
+  type: 0
+langs:
+  en:
+    _desc: Create or truncate the file
+    _name: Create File
+    _trunc: Truncate If File Exists
+  ru:
+    _desc: Создать или обрезать файл
+    _name: Создать файл
+    _trunc: Обрезать если файл существует
+code: CreateFile(filename, trunc)

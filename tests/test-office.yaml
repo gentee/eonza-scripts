@@ -1,0 +1,264 @@
+settings:
+  name: test-office
+  title: Test Office
+  path: '#.tests#'
+  loglevel: 6
+params:
+- name: dir
+  title: '#_dir#'
+  type: 2
+tree:
+- name: source-code
+  open: true
+  values:
+    _desc: Create initial files and folders
+    code: '%body%'
+  children:
+  - name: curdir
+    values:
+      _ifcond: '*GetVar("dir") == 0'
+      varname: dir
+  - name: log-output
+    values:
+      level: LOG_INFO
+      text: Test Office is running...
+  - name: set-variable
+    values:
+      list: {}
+      name: retdir
+      subst: "1"
+      value: '#.temppath#'
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: office-tmp
+      name: dir
+      subst: "0"
+      value: ""
+  - name: create-dir
+    values:
+      path: '#dir#'
+  - name: source-code
+    disable: true
+    values:
+      code: |-
+        Asset("files/tests/test.docx", JoinPath(Macro("#dir#"), "test.docx"))
+        Asset("files/tests/test.odt", JoinPath(Macro("#dir#"), "test.odt"))
+        Asset("files/tests/test.ods", JoinPath(Macro("#dir#"), "test.ods"))
+        Asset("files/tests/test.xlsx", JoinPath(Macro("#dir#"), "test.xlsx"))
+        Asset("files/tests/rows.xlsx", JoinPath(Macro("#dir#"), "rows.xlsx"))
+  - name: foreach-line
+    open: true
+    values:
+      text: |-
+        test.docx
+        test.odt
+        test.ods
+        test.xlsx
+        rows.xlsx
+        pattern.docx
+        pattern.odt
+        pattern.ods
+        pattern.xlsx
+        list.xlsx
+      varname: assetfile
+    children:
+    - name: source-code
+      values:
+        code: |
+          Asset(Macro("files/tests/#assetfile#"), JoinPath(Macro("#dir#"), Macro("#assetfile#")))
+- name: set-variables
+  values:
+    list:
+    - value: '#.date#'
+      var: date
+    - value: '#.time#'
+      var: t
+    - value: Result Value
+      var: before
+    - value: after
+      var: aftername
+    - value: First
+      var: myvalue
+- name: source-code
+  open: true
+  values:
+    _desc: Create docs
+    code: '%body%'
+  children:
+  - name: set-variables
+    values:
+      list:
+      - value: result
+        var: lname
+  - name: create-docs-from-excel
+    values:
+      columns: id,name,company
+      list:
+      - output: ""
+        pattern: '#dir#/pattern.docx'
+      - output: '#usr.name#'
+        pattern: '#dir#/pattern.ods'
+      - output: '#lname#'
+        pattern: '#dir#/pattern.xlsx'
+      - output: '#usr.id# - #usr.name#'
+        pattern: '#dir#/pattern.odt'
+      outputdir: '#dir#/list'
+      varname: usr
+      xlsxfile: '#dir#/list.xlsx'
+  - name: foreach-file
+    open: true
+    values:
+      path: '#dir#/list'
+      recursive: false
+      varname: fd
+    children:
+    - name: source-code
+      values:
+        code: SetVar("doccount", GetVarInt("doccount")+1)
+  - name: get-excel-cells
+    values:
+      list:
+      - cell: B3
+        sheet: ""
+        var: xlid
+      - cell: B5
+        sheet: ""
+        var: xlcompany
+      - cell: C2
+        sheet: My List
+        var: xlc
+      xlsxfile: '#dir#/list/result.xlsx'
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: "12"
+        var: doccount
+      - cmp: equal
+        not: false
+        value: "10"
+        var: xlid
+      - cmp: equal
+        not: false
+        value: Google Inc.
+        var: xlcompany
+      - cmp: equal
+        not: false
+        value: 10 - John Doe
+        var: xlc
+- name: source-code
+  values:
+    _desc: Test XLSX rows
+    code: '%body%'
+  children:
+  - name: foreach-xlsx
+    open: true
+    values:
+      varname: row
+      xlsxfile: '#dir#/rows.xlsx'
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#row[0]##row[1]#'
+        name: xl1
+        subst: "1"
+  - name: foreach-xlsx
+    open: true
+    values:
+      sheet: Sheet 2
+      varname: row
+      xlsxfile: '#dir#/rows.xlsx'
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#row[0]##row[1]#'
+        name: xl2
+        subst: "1"
+  - name: foreach-xlsx
+    open: true
+    values:
+      columns: name,id,site
+      sheet: Data
+      varname: mrow
+      xlsxfile: '#dir#/rows.xlsx'
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#mrow.name#,#mrow.id#,#mrow.site#;'
+        name: xl3
+        subst: "1"
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: 1MrJohnOoops777#.date##myvalue#
+        var: xl1
+      - cmp: equal
+        not: false
+        value: "0123"
+        var: xl2
+      - cmp: equal
+        not: false
+        value: John Doe,2354,google.com;Иван Иванов,197,vk.com;Alice Smith,88,;
+        var: xl3
+- name: parse-json
+  values:
+    resultvar: otmp
+    value: |-
+      {
+          "list": ["0", "1", "2"],
+          "name": "John",
+          "username": "Иван Иванович"
+      }
+- name: source-code
+  open: true
+  values:
+    _desc: Test Office scripts
+    code: '%body%'
+  children:
+  - name: docx-template
+    values:
+      outputfile: '#retdir#/result.docx'
+      template: '#dir#/test.docx'
+  - name: open
+    values:
+      path: '#retdir#/result.docx'
+  - name: odf-odt-template
+    values:
+      outputfile: '#retdir#/result.odt'
+      template: '#dir#/test.odt'
+  - name: open
+    values:
+      path: '#retdir#/result.odt'
+  - name: odf-ods-template
+    values:
+      outputfile: '#retdir#/result.ods'
+      template: '#dir#/test.ods'
+  - name: open
+    values:
+      path: '#retdir#/result.ods'
+  - name: xlsx-template
+    values:
+      outputfile: '#retdir#/result.xlsx'
+      template: '#dir#/test.xlsx'
+  - name: open
+    values:
+      path: '#retdir#/result.xlsx'
+- name: delete-dir
+  values:
+    path: '#dir#'
+langs:
+  en:
+    _dir: Path for the test folder
+  ru:
+    _dir: Путь для тестовой директории

@@ -1,0 +1,71 @@
+settings:
+  name: while
+  title: '#_while#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.programming#"
+  help: while-statement
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: list
+  title: '#.conditions#'
+  type: 5
+  options:
+    list:
+    - name: var
+      title: '#.varname#'
+      type: 2
+    - name: not
+      title: '#.negation#'
+      type: 0
+      options:
+        output:
+        - ""
+        - NOT
+    - name: cmp
+      title: '#.comparetype#'
+      type: 3
+      options:
+        type: str
+        items:
+        - title: '#.equal#'
+          value: equal
+        - title: '#_contains#'
+          value: contains
+        - title: '#.fileexists#'
+          value: fileexists
+        - title: '#.envexists#'
+          value: envexists
+        - title: '#.regexmatch#'
+          value: match
+        - title: '#_startswith#'
+          value: starts
+    - name: value
+      title: '#.value#'
+      type: 2
+    - name: next
+      title: '#.nextcond#'
+      type: 3
+      options:
+        type: str
+        items:
+        - title: '#.and#'
+          value: "0"
+        - title: '#.or#'
+          value: "1"
+langs:
+  en:
+    _desc: Conditional loop
+    _while: While Statement
+    _contains: Contains
+    _startswith: Starts With
+  ru:
+    _desc: Условный цикл
+    _while: Условный цикл
+    _contains: Содержит
+    _startswith: Начинается с
+code: |-
+  while Condition("", list) {
+      %body%
+  }

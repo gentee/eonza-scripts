@@ -1,0 +1,32 @@
+settings:
+  name: error.eonza
+  title: '#.error#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.programming#"
+  loglevel: 6
+  unrun: true
+  help: error
+  helplang: ru
+params:
+- name: text
+  title: '#_errmsg#'
+  type: 2
+  options:
+    required: true
+- name: code
+  title: '#_errcode#'
+  type: 4
+  options:
+    default: "100"
+langs:
+  en:
+    _desc: Stop the script with an error
+    _errcode: Error Code
+    _errmsg: Error message
+  ru:
+    _desc: Прекратить работу скрипта с ошибкой
+    _errcode: Код ошибки
+    _errmsg: Сообщение об ошибке
+code: |-
+  LogOutput(LOG_ERROR, `%{code}, %{text}`)
+  error(code, text)

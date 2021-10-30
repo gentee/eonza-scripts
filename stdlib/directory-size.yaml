@@ -1,0 +1,51 @@
+settings:
+  name: directory-size
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: directory-size
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+tree:
+- name: file-list
+  values:
+    path: '#path#'
+    recursive: "true"
+    resultvar: list
+- name: source-code
+  values:
+    code: |-
+      obj list = GetVarObj("list")
+      int countFiles countDirs
+      int summary
+      for item in arr(list) {
+              if item(item, "isdir").bool() :  countDirs++
+              else {
+                   countFiles++
+                   summary += item(item, "size").int()
+              }
+      }
+      map.int  ret = {"size": summary, "files": countFiles, "dirs": countDirs }
+      ResultVar( GetVar("resultvar"), obj(ret))
+      ResultVar(GetVar("resultvar"), str(summary))
+langs:
+  en:
+    _desc: Get directory size
+    _name: Directory Size
+  ru:
+    _desc: Получить размер директории
+    _name: Размер директории
+code: |
+  if *resultvar == 0 : return

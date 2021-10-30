@@ -1,0 +1,466 @@
+settings:
+  name: test-texts
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+params:
+- name: dir
+  title: '#_dir#'
+  type: 2
+tree:
+- name: source-code
+  values:
+    _desc: Create initial files and folders
+    code: '%body%'
+  children:
+  - name: curdir
+    values:
+      _ifcond: '*GetVar("dir") == 0'
+      varname: dir
+  - name: log-output
+    values:
+      level: LOG_INFO
+      text: Creating files...
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: text-tmp
+      name: dir
+      subst: "0"
+      value: ""
+  - name: set-variables
+    values:
+      list:
+      - value: '#dir#/file.txt'
+        var: ftxt
+      - value: '#dir#/lines.txt'
+        var: flines
+      - value: '#dir#/empty.txt'
+        var: fempty
+      - value: |-
+          Test message
+          Русский текст
+        var: cliptext
+      - value: Test 71 Тест 80
+        var: hextest
+      - value: ihex
+        var: myhex
+      - value: '#dir#/test.csv'
+        var: fcsv
+      - value: '#dir#/test.ini'
+        var: fini
+  - name: create-dir
+    values:
+      path: '#dir#'
+  - name: source-code
+    values:
+      code: |
+        str out
+        for i in 1..10000 {
+            if i %17 == 0 {
+                out += "\n"
+            } else {
+                out += "Line: \{i} = \{ ?(i%5 == 0,`Test message`, `skipped message`) } \{i}\n"
+             }
+        }
+        WriteFile(GetVar("ftxt"), out)
+        SetVar("txtout", out)
+        SetVar("ftextsize", *out)
+        out = ""
+        for i in 1..2000 {
+            out += "Line: \{i},\{i*2},\{Hex(RandomBuf(10))},\{ ?(i%3 == 0,
+        `Third item`, `original item`) },\{i}\r\n"
+        }
+        WriteFile(GetVar("flines"), out)
+        WriteFile(GetVar("fempty"), "")
+  - name: set-variable
+    values:
+      list:
+      - func: hash
+        param: md5
+      name: txtout
+  - name: file-hash
+    values:
+      algorithm: MD5
+      filename: '#flines#'
+      resultvar: hashlines
+- name: source-code
+  open: true
+  values:
+    _desc: INI Files
+    code: '%body%'
+  children:
+  - name: set-variables
+    values:
+      list:
+      - value: |-
+          root = Root User
+          [My section]
+          Name = John Doe
+          Active = true
+          pi=3.1415
+        var: inidata
+  - name: write-file
+    values:
+      filename: '#fini#'
+      name: inidata
+  - name: read-ini-values
+    values:
+      filename: '#fini#'
+      list:
+      - def: Ooops
+        key: root
+        var: rootname
+      - def: noname
+        key: name
+        var: inoname
+  - name: read-ini-values
+    values:
+      filename: '#fini#'
+      list:
+      - def: ""
+        key: Name
+        var: iname
+      - def: "false"
+        key: Active
+        var: iactive
+      - def: "0"
+        key: pi
+        var: ipi
+      - def: Unknown
+        key: unknown
+        var: iunknown
+      section: My section
+  - name: read-ini-values
+    values:
+      filename: '#fini#'
+      list:
+      - def: Undefined
+        key: mykey
+        var: nosec
+      section: No Section
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: Root Usernoname
+        var: '#rootname##inoname#'
+      - cmp: equal
+        not: false
+        value: John Doetrue3.1415Unknown
+        var: '#iname##iactive##ipi##iunknown#'
+      - cmp: equal
+        not: false
+        value: Undefined
+        var: nosec
+- name: source-code
+  open: true
+  values:
+    _desc: CSV Files
+    code: '%body%'
+  children:
+  - name: set-variable
+    values:
+      list: {}
+      name: csvdata
+      subst: "0"
+      value: |-
+        "Robert","Google",1200
+        "John Dow","My Company, Inc.",3600
+        Alex 1,Private Company,4800
+  - name: write-file
+    values:
+      filename: '#fcsv#'
+      name: csvdata
+  - name: foreach-csv
+    open: true
+    values:
+      csvfile: '#fcsv#'
+      varname: csvline
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#csvline[2]#;#csvline[1]#;#csvline[0]##.n#'
+        name: csvout
+        subst: "0"
+        value: ""
+  - name: write-file
+    values:
+      filename: '#fcsv#'
+      name: csvout
+  - name: foreach-csv
+    open: true
+    values:
+      columns: value,,name
+      csvfile: '#fcsv#'
+      delim: ;
+      varname: csvline
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#csvline.name# #csvline.value#='
+        name: csvcheck
+        subst: "0"
+        value: ""
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: Robert 1200=John Dow 3600=Alex 1 4800=
+        var: csvcheck
+- name: source-code
+  values:
+    _desc: Encoding
+    code: '%body%'
+  children:
+  - name: hex-encoding
+    values:
+      encoding: "0"
+      resultvar: hexret
+      varname: hextest
+  - name: base64-encoding
+    values:
+      encoding: "0"
+      resultvar: baseret
+      varname: hextest
+  - name: set-variable
+    values:
+      list: {}
+      name: '#myhex#'
+      subst: "3"
+      value: '#hexret#'
+  - name: hex-encoding
+    values:
+      encoding: "1"
+      resultvar: ""
+      varname: hexret
+  - name: base64-encoding
+    values:
+      encoding: "1"
+      resultvar: unbase64
+      varname: baseret
+  - name: parse-json
+    values:
+      resultvar: cnvlist
+      value: |-
+        [
+            {"encoding": "Big5", "utf": "下一步", "cp": "a455a440a842"},
+            {"encoding": "GBK", "utf": "下一步", "cp": "cfc2d2bbb2bd"},
+            {"encoding": "Shift_JIS", "utf": "次へ", "cp": "8e9f82d6"},
+            {"encoding": "windows-1250", "utf": "Další", "cp": "44616c9aed"},
+            {"encoding": "windows-1251", "utf": "Отмена", "cp": "cef2ece5ede0"},
+            {"encoding": "windows-1252", "utf": "Següent", "cp": "536567fc656e74"},
+            {"encoding": "windows-1253", "utf": "Επόμενο", "cp": "c5f0fcece5edef"},
+            {"encoding": "windows-1254", "utf": "Gözat", "cp": "47f67a6174"},
+            {"encoding": "windows-1255", "utf": "המשך", "cp": "e4eef9ea"},
+            {"encoding": "windows-1256", "utf": "التالي", "cp": "c7e1cac7e1ed"},
+            {"encoding": "windows-1257", "utf": "Naršyti", "cp": "4e6172f0797469"}
+        ]
+  - name: foreach
+    open: true
+    values:
+      varitem: item
+      varname: cnvlist
+    children:
+    - name: convert-text
+      values:
+        _advanced: |-
+          params:
+              dest: "#item.encoding#"
+        dest: utf-8
+        resultvar: cnvret
+        src: utf-8
+        varname: item.utf
+    - name: hex-encoding
+      values:
+        encoding: "0"
+        resultvar: hexcnvret
+        varname: cnvret
+    - name: convert-text
+      values:
+        _advanced: |-
+          params:
+               src: "#item.encoding#"
+        dest: utf-8
+        resultvar: ""
+        src: utf-8
+        varname: cnvret
+    - name: assertions
+      values:
+        errmsg: ""
+        list:
+        - cmp: equal
+          not: false
+          value: '#cnvret#'
+          var: item.utf
+        - cmp: equal
+          not: false
+          value: '#hexcnvret#'
+          var: item.cp
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: '#hexret#'
+        var: hextest
+      - cmp: equal
+        not: false
+        value: 5465737420373120d0a2d0b5d181d182203830
+        var: ihex
+      - cmp: equal
+        not: false
+        value: VGVzdCA3MSDQotC10YHRgiA4MA==
+        var: baseret
+      - cmp: equal
+        not: false
+        value: '#hextest#'
+        var: unbase64
+- name: source-code
+  open: true
+  values:
+    _desc: Clipboard
+    code: '%body%'
+  children:
+  - name: try
+    open: true
+    values:
+      title: Clipboard error
+    children:
+    - name: write-console
+      values:
+        text: Clipboard tests
+    - name: copy-to-clipboard
+      values:
+        text: '#cliptext#'
+    - name: get-clipboard
+      values:
+        varname: clip1
+    - name: get-clipboard
+      values:
+        clear: true
+        varname: clip2
+    - name: get-clipboard
+      values:
+        clear: false
+        varname: clip3
+    - name: assertions
+      values:
+        list:
+        - cmp: equal
+          not: false
+          value: '#cliptext#'
+          var: clip1
+        - cmp: equal
+          not: false
+          value: '#clip1#'
+          var: clip2
+        - cmp: equal
+          not: false
+          value: ""
+          var: clip3
+- name: foreach-line-file
+  values:
+    filename: '#ftxt#'
+    varname: item
+  children:
+  - name: if.eonza
+    open: true
+    values:
+      list:
+      - cmp: equal
+        next: "0"
+        not: false
+        value: ""
+        var: item
+    children:
+    - name: source-code
+      values:
+        code: SetVar("count", GetVarInt("count") + 1)
+- name: log-output
+  values:
+    level: LOG_INFO
+    text: 'Foreach Line in lines.txt file #count#'
+- name: foreach-line-file
+  values:
+    filename: '#flines#'
+    varname: item
+  children:
+  - name: set-variable
+    disable: true
+    values:
+      list:
+      - func: append
+        param: '#item##.r##.n#'
+      name: lines
+  - name: source-code
+    values:
+      code: SetVar("lines", GetVar("lines") + GetVar("item") + "\r\n")
+- name: set-variable
+  values:
+    list:
+    - func: hash
+      param: ""
+    name: newhash
+    subst: "1"
+    value: '#lines#'
+- name: set-variable
+  values:
+    list:
+    - func: substr
+      param: "4"
+    name: subs
+    subst: "1"
+    value: Это русский текст
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: '#newhash#'
+      var: hashlines
+    - cmp: equal
+      not: false
+      value: "312861"
+      var: ftextsize
+    - cmp: equal
+      not: false
+      value: "588"
+      var: count
+    - cmp: equal
+      not: false
+      value: 2d36d680bc64f274b34fc6f9a420ab09
+      var: txtout
+    - cmp: equal
+      not: false
+      value: русский текст
+      var: subs
+- name: foreach-line-file
+  open: true
+  values:
+    filename: '#fempty#'
+    varname: item
+  children:
+  - name: error.eonza
+    values:
+      text: Empty file
+- name: delete-dir
+  values:
+    path: '#dir#'
+langs:
+  en:
+    _desc: Test text commands
+    _dir: Path for test folder
+    _name: Test - Texts
+  ru:
+    _desc: Тестирование скриптов для работы с текстом
+    _dir: Путь для папки тестирования
+    _name: Тест - Тексты

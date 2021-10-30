@@ -1,0 +1,102 @@
+settings:
+  name: move-file
+  title: '#_move#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: move-file
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: destpath
+  title: '#_destpath#'
+  type: 2
+  options:
+    required: true
+- name: ifexist
+  title: '#.iffileexist#'
+  type: 3
+  options:
+    initial: overwrite
+    items:
+    - title: '#.overwrite#'
+      value: overwrite
+    - title: '#.overwritenew#'
+      value: overwritenew
+    - title: '#.skip#'
+      value: skip
+    - title: '#.ask#'
+      value: ask
+    - title: '#.asknew#'
+      value: asknew
+    - title: '#.savecopy#'
+      value: savecopy
+- name: hideapply
+  title: hideapply
+  type: 0
+  options:
+    initial: "true"
+    default: "true"
+    optional: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    optional: true
+tree:
+- name: source-code
+  open: true
+  values:
+    code: |-
+      str src = AbsPath(GetVar("path"))
+      str dest = AbsPath(GetVar("destpath"))
+      str ifexist = GetVar("ifexist")
+      str resultvar = GetVar("resultvar")
+      str destfile = JoinPath(dest, BaseName(src))
+      map defret = {"all": "", "btn": ""}
+      obj ret = obj(defret)
+      if *resultvar? : ResultVar(resultvar, ret)
+      if ExistFile(destfile) {
+           if ifexist == "skip" : return
+           finfo ficur = FileInfo(destfile)
+           finfo finew = FileInfo(src)
+           if !ficur.IsDir && !finew.IsDir {
+              if ifexist == "overwritenew" || ifexist == "asknew" {
+                  if finew.Time <= ficur.Time :  return
+              }
+              if ifexist == "ask" || ifexist == "asknew" {
+                    SetVar("curfile", destfile)
+                    SetVar("newfile", "\{finew.Size},\{str(finew.Time)}")
+                    %body%
+                    ret = GetVarObj("ret")
+                    if *resultvar? : ResultVar(resultvar, ret)
+                    ifexist = item(ret, "btn").str()
+                    if ifexist == "skip" : return
+              }
+              if ifexist == "savecopy" : destfile = CopyName(destfile)
+              else : Remove(destfile)
+           }
+      }
+      Rename(src, destfile)
+      LogOutput(LOG_INFO, "=> move_file(\{src},\{destfile})")
+  children:
+  - name: file-confirmation
+    values:
+      _optional: 'hideapply: "#hideapply#"'
+      existfile: '#curfile#'
+      newfile: '#newfile#'
+      resultvar: ret    
+langs:
+  en:
+    _desc: Move file or directory
+    _destpath: Destination Path
+    _move: Move File
+  ru:
+    _desc: Переместить файл или директорию
+    _destpath: Целевая директория
+    _move: Переместить файл

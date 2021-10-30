@@ -1,0 +1,51 @@
+settings:
+  name: foreach
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.variables#"    
+  loglevel: 6
+  unrun: true
+  help: foreach
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: varitem
+  title: '#.varitem#'
+  type: 2
+  options:
+    required: true
+- name: varindex
+  title: '#.varindex#'
+  type: 2
+langs:
+  en:
+    _desc: Go through the object elements
+    _name: Foreach
+  ru:
+    _desc: Перебрать элементы объекта
+    _name: Для каждого
+code: |
+  obj iobj = GetVarObj(varname)
+  local body {
+      %body%
+  }
+  if IsMap(iobj) {
+      map.obj imap = map(iobj)
+      for item, index in imap {
+          if varindex? :  SetVar(varindex, Key(imap, index))
+          SetVar(varitem, item)
+          body()
+      }
+  } elif IsArray(iobj) {
+      for item, index in arr(iobj) {
+          if varindex? : SetVar(varindex, index)
+          SetVar(varitem, item)
+          body()
+      }
+  }  else {
+     error(100, "The %s object is not an array or a map", varname)
+  }

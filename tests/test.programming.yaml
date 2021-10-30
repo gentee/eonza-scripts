@@ -1,0 +1,82 @@
+settings:
+  name: test.programming
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.tests#"
+  loglevel: 6
+params:
+- name: retvar
+  title: '#.resultvar#'
+  type: 2
+- name: mode
+  title: Mode
+  type: 3
+  options:
+    items:
+    - title: return var
+      value: retvar
+    - title: return
+      value: ret
+    - title: return while
+      value: retwhile
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: "100"
+      var: counter
+- name: source-code
+  open: true
+  values:
+    _ifcond: '!IsEntry()'
+    code: |-
+      ResultVar(GetVar("retvar") + "x", "No Result")
+      %body%
+- name: while
+  open: true
+  values:
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: Stop
+      var: counter
+  children:
+  - name: return.eonza
+    values:
+      _ifcond: GetVar("mode") == "retwhile"
+      resultvar: '#retvar#'
+      value: While
+  - name: set-variables
+    values:
+      list:
+      - value: Stop
+        var: counter
+- name: assertions
+  values:
+    errmsg: ""
+    list:
+    - cmp: equal
+      not: false
+      value: Stop
+      var: counter
+- name: return.eonza
+  values:
+    _ifcond: GetVar("mode") == "retvar"
+    resultvar: '#retvar#'
+    value: Default Result
+- name: return.eonza
+  values:
+    _ifcond: GetVar("mode") == "ret"
+    resultvar: ""
+    value: ""
+- name: error.eonza
+  values:
+    text: Ooops 'Return' problem
+langs:
+  en:
+    _desc: Default tests for Programming group
+    _name: Test - Programming
+  ru:
+    _desc: Тесты для группы Программирование
+    _name: Тест - Программирование

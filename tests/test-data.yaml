@@ -1,0 +1,123 @@
+settings:
+  name: test-data
+  title: Test Data
+  path: '#.tests#'
+  loglevel: 6
+params:
+- name: dir
+  title: '#.path#'
+  type: 2
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: "123"
+      var: val1
+    - value: "456"
+      var: val2
+    - value: "{\n\"num\": \"34\",\n\"path\": \"#eoutfile#\",\n\"list\": [ \n      {
+        \"title\": \"First Item\", \"value\": -4},\n      { \"title\": \"Second Item\",
+        \"value\": \"-10\"}\n   ]\n}"
+      var: token_data
+- name: source-code
+  open: true
+  values:
+    _desc: ""
+    code: |
+      %body%
+  children:
+  - name: curdir
+    values:
+      _ifcond: '*GetVar("dir") == 0'
+      varname: dir
+  - name: log-output
+    values:
+      level: LOG_INFO
+      text: Test events...
+- name: set-variable
+  values:
+    list:
+    - func: appendpath
+      param: eonza-events.tmp
+    name: outfile
+    subst: "0"
+    value: '#dir#'
+- name: delete-file
+  values:
+    onlyexist: true
+    path: '#outfile#'
+- name: source-code
+  values:
+    code: SetVar("eoutfile", Replace(GetVar("outfile"), `\`, `\\`))
+- name: run-script
+  values:
+    data: "str: String message\nnum: 0x2345\nis: true\npath: \"#eoutfile#\"\nlist:
+      \n      - title: First Item \n        value: \"#val1#\"\n      - title: \"Second
+      Item\" \n        value: \"#val2#\""
+    script: data-print
+    silent: true
+- name: sleep.eonza
+  values:
+    timeout: "750"
+- name: create-event
+  values:
+    data: "{\n\"num\": 77,\n\"path\": \"#eoutfile#\",\n\"list\": [ \n      { \"title\":
+      \"First Item\", \"value\": 11},\n      { \"title\": \"Second Item\", \"value\":
+      \"13\"}\n   ]\n}"
+    event: test
+- name: sleep.eonza
+  values:
+    timeout: "1000"
+- name: get-webpage
+  values:
+    url: http://localhost:#.eonzaport#/api/randid
+    varname: randjson
+- name: parse-json
+  values:
+    resultvar: rand
+    value: '#randjson#'
+- name: set-variable
+  values:
+    list:
+    - func: hash
+      param: sha256
+    name: sign
+    subst: "1"
+    value: test#token_data##rand.rand#TEST_TOKEN
+- name: httprequest
+  values:
+    headers: []
+    method: POST
+    pars:
+    - name: name
+      value: test
+    - name: data
+      value: '#token_data#'
+    - name: rand
+      value: '#rand.rand#'
+    - name: sign
+      value: '#sign#'
+    url: http://localhost:#.eonzaport#/api/event
+    varname: ret
+- name: sleep.eonza
+  values:
+    timeout: "1000"
+- name: read-file
+  values:
+    filename: '#outfile#'
+    name: out
+- name: write-console
+  values:
+    text: |-
+      RAND = #rand.rand#
+      OUT = #out#
+- name: delete-file
+  values:
+    path: '#outfile#'
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: "960810120"
+      var: out

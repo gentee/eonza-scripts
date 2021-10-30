@@ -1,0 +1,36 @@
+settings:
+  name: split-text
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.text#"    
+  loglevel: 6
+  unrun: true
+  help: split-text
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+  options:
+    required: true
+- name: delim
+  title: '#.delimiter#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: |
+      Split text into substrings
+    _name: Split Text
+  ru:
+    _desc: Разбить текст на подстроки
+    _name: Разбить Текст
+code: |
+  obj items = obj(Split(text, delim))
+  SetVar(varname, items)

@@ -1,0 +1,30 @@
+settings:
+  name: docx-template
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 4
+  unrun: true
+  help: docx-template
+  helplang: ru
+params:
+- name: template
+  title: '#_template#'
+  type: 2
+  options:
+    required: true
+- name: outputfile
+  title: '#.outputfile#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Replace variables in DOCX template
+    _name: Docx Template
+    _template: Template (*.docx)
+  ru:
+    _desc: Заменить переменные в DOCX шаблоне
+    _name: Шаблон Docx
+    _template: Шаблон (*.docx)
+code: DocxTemplate(template, outputfile)

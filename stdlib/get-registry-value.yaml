@@ -1,0 +1,64 @@
+settings:
+  name: get-registry-value
+  title: '#_name#'
+  path: '#.stdlib#/Windows/#.registry#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: get-registry-value
+  helplang: ru
+params:
+- name: root
+  title: '#.rootkey#'
+  type: 3
+  options:
+    initial: "1"
+    flags: default.regkeys
+    type: int
+- name: subkey
+  title: '#.subkey#'
+  type: 2
+  options:
+    required: true
+- name: values
+  title: '#_values#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: value
+      title: '#.valname#'
+      type: 2
+    - name: var
+      title: '#.varname#'
+      type: 2
+      options:
+        required: true
+    - name: def
+      title: '#.defvalue#'
+      type: 2
+- name: access
+  title: '#.access#'
+  type: 3
+  options:
+    initial: "0"
+    flags: default.regaccess
+    type: int
+langs:
+  en:
+    _desc: Get Registry values
+    _name: Get Registry Value
+    _values: Values
+  ru:
+    _desc: Получить значения из Реестра
+    _name: Получить значение Реестра
+    _values: Значения
+code: |+
+  obj vobj = JsonToObj(values)
+  handle key = OpenRegistryKey(root, subkey, access)
+  for vitem in vobj {
+       SetVar(item(vitem, "var").str(), GetRegistryValue(key, item(vitem, "value").str(), item(vitem, "def").str()))
+  }
+  CloseRegistryKey(key)
+
+

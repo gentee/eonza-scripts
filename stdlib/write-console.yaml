@@ -1,0 +1,23 @@
+settings:
+  name: write-console
+  title: '#_writeconsole#'
+  desc: '#_desc#'  
+  path: "#.stdlib#/#.logconsole#"  
+  help: write-to-console
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+  - name: text
+    title: '#.text#'
+    type: 1
+    options: 
+      required: true
+langs:
+  en:
+    _desc: Print string to console
+    _writeconsole: Write To Console
+  ru:
+    _desc: Вывести строку в консоль
+    _writeconsole: Записать в консоль
+code: Println( text )

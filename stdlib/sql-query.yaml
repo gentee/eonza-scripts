@@ -1,0 +1,44 @@
+settings:
+  name: sql-query
+  title: '#_name#'
+  path: '#.stdlib#/#.database#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: sql-query
+  helplang: ru
+  unrun: true
+params:
+- name: sqlcon
+  title: '#.sqlcon#'
+  type: 2
+  options:
+    required: true
+- name: sqlquery
+  title: '#_sqlsel#'
+  type: 1
+  options:
+    required: true
+- name: pars
+  title: '#.parameters#'
+  type: 5
+  options:
+    list:
+    - name: par
+      title: '#.value#'
+      type: 2
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Execute SQL Query
+    _name: SQL Query
+    _sqlsel: SELECT Statement
+  ru:
+    _desc: Выполнить SQL запрос
+    _name: SQL Запрос
+    _sqlsel: Запрос SELECT
+code: "arr list\nobj vobj = JsonToObj(pars) \nfor vitem in vobj {\n    list += Macro(item(vitem,
+  \"par\").str())\n}\nSQLQuery(sqlcon, sqlquery, list, resultvar)"

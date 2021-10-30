@@ -1,0 +1,43 @@
+settings:
+  name: regex-find
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.text#"    
+  loglevel: 6
+  unrun: true
+  help: regex-find
+  helplang: ru  
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: regex
+  title: '#.regex#'
+  type: 2
+  options:
+    required: true
+- name: all
+  title: '#_findall#'
+  type: 0
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Find matches of the regular expression
+    _findall: Find All Matches
+    _name: RegEx - Find
+  ru:
+    _desc: Найти вхождения регулярного выражения
+    _findall: Найти все совпадения
+    _name: RegEx - Найти
+code: |-
+  str val = GetVar(varname)
+  obj ret
+  if all : ret = obj(FindRegExp(val, regex))
+  else : ret = obj(FindFirstRegExp(val, regex))
+  SetVar(resultvar, ret)

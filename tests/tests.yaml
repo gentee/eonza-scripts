@@ -1,0 +1,84 @@
+settings:
+  name: tests
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+tree:
+- name: set-variables
+  values:
+    list:
+    - type: "2"
+      value: '#.apppath#'
+      var: testpath
+- name: form
+  values:
+    list:
+    - options: ""
+      text: 'Path for ''eonza-test'' test folder '
+      type: "2"
+      var: testpath
+- name: test-data
+  values:
+    dir: '#testpath#'
+- name: test-files
+  values:
+    dir: '#testpath#'
+- name: test-windows
+  values:
+    _ifcond: Macro("#.os#") == "windows"
+- name: test-json
+- name: test.programming
+  values:
+    mode: retvar
+    retvar: myret
+- name: test.programming
+  values:
+    mode: retwhile
+    retvar: mywhile
+- name: test.programming
+  values:
+    mode: ret
+    retvar: noret
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: Default Result
+      var: myret
+    - cmp: equal
+      not: false
+      value: No Result
+      var: noretx
+    - cmp: equal
+      not: false
+      value: ""
+      var: noret
+    - cmp: equal
+      not: false
+      value: While
+      var: mywhile
+- name: write-console
+  values:
+    text: Testing archives
+- name: test-archive
+  values:
+    dir: '#testpath#'
+- name: test-texts
+  values:
+    dir: '#testpath#'
+- name: test-email
+- name: test-html
+- name: test-sql
+- name: test121
+- name: test-office
+  values:
+    dir: '#testpath#'
+langs:
+  en:
+    _desc: Run all default tests
+    _name: All Tests
+  ru:
+    _desc: Запустить все тесты
+    _name: Все тесты

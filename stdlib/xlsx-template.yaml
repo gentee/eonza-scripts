@@ -1,0 +1,30 @@
+settings:
+  name: xlsx-template
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 4
+  unrun: true
+  help: xlsx-template
+  helplang: ru
+params:
+- name: template
+  title: '#_template#'
+  type: 2
+  options:
+    required: true
+- name: outputfile
+  title: '#.outputfile#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Replace variables in XLSX template
+    _name: XLSX Template
+    _template: Template (*.xlsx)
+  ru:
+    _desc: Заменить переменные в XLSX шаблоне
+    _name: Шаблон XLSX
+    _template: Шаблон (*.xlsx)
+code: XlsxTemplate(template, outputfile)

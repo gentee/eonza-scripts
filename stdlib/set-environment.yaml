@@ -1,0 +1,32 @@
+settings:
+  name: set-environment
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.variables#"  
+  loglevel: 6
+  unrun: true
+  help: set-environment
+  helplang: ru
+params:
+- name: list
+  title: '#_vars#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: var
+      title: '#.varname#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 2
+langs:
+  en:
+    _desc: Set Environment variables
+    _name: Set Environment
+    _vars: Environment Variables
+  ru:
+    _desc: Установить переменные окружения
+    _name: Установить окружение
+    _vars: Переменные окружения
+code: "obj vobj = JsonToObj(list) \nfor vitem in vobj {\n   str val = item(vitem, \"value\").str()\n   str var = item(vitem, \"var\").str()\n    if *val? :  SetEnv(var, val)\n    else : UnsetEnv(var)\n}\n"

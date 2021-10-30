@@ -1,0 +1,28 @@
+settings:
+  name: get-webpage
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.network#"  
+  loglevel: 6
+  unrun: true
+  help: get-webpage
+  helplang: ru
+params:
+- name: url
+  title: '#.url#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Get the content of the web page
+    _name: Get Web Page
+  ru:
+    _desc: Получить содержимое веб-страницы
+    _name: Получить веб-страницу
+code: SetVar(varname, HTTPPage(url))

@@ -1,0 +1,131 @@
+settings:
+  name: create-docs-from-excel
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: create-docs-from-excel
+  helplang: ru
+params:
+- name: xlsxfile
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: columns
+  title: '#_columns#'
+  type: 2
+- name: outputdir
+  title: '#_outputfolder#'
+  type: 2
+  options:
+    required: true
+- name: list
+  title: '#_patterns#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: pattern
+      title: '#_template#'
+      type: 2
+    - name: output
+      title: '#_resultname#'
+      type: 2
+tree:
+- name: create-dir
+  values:
+    path: '#outputdir#'
+- name: parse-json
+  values:
+    resultvar: list
+    value: '#list#'
+- name: foreach-xlsx
+  open: true
+  values:
+    columns: '#columns#'
+    sheet: ""
+    varname: '#varname#'
+    xlsxfile: '#xlsxfile#'
+  children:
+  - name: foreach
+    open: true
+    values:
+      varitem: item
+      varname: list
+    children:
+    - name: parse-filename
+      values:
+        filename: '#item.pattern#'
+        varname: doc
+    - name: set-variable
+      values:
+        list: []
+        name: docname
+        subst: "1"
+        value: '#outputdir#/#doc.filename#'
+    - name: set-variable
+      values:
+        _ifcond: '*Macro("#item.output#")?'
+        list: []
+        name: docname
+        subst: "1"
+        value: '#outputdir#/#item.output#.#doc.ext#'
+    - name: auto-increment-filename
+      values:
+        filename: '#docname#'
+        resultvar: outputfile
+    - name: docx-template
+      values:
+        _ifcond: Macro("#doc.ext#") == "docx"
+        outputfile: '#outputfile#'
+        template: '#doc#'
+    - name: odf-ods-template
+      values:
+        _ifcond: Macro("#doc.ext#") == "ods"
+        outputfile: '#outputfile#'
+        template: '#doc#'
+    - name: xlsx-template
+      values:
+        _ifcond: Macro("#doc.ext#") == "xlsx"
+        outputfile: '#outputfile#'
+        template: '#doc#'
+    - name: odf-odt-template
+      values:
+        _ifcond: Macro("#doc.ext#") == "odt"
+        outputfile: '#outputfile#'
+        template: '#doc#'
+langs:
+  en:
+    _columns: Columns
+    _desc: Create documents from Excel list
+    _name: Create Docs From Excel
+    _outputfolder: Output Folder
+    _patterns: Templates
+    _resultname: Filename Pattern
+    _template: Document Template
+  ru:
+    _columns: Колонки
+    _desc: Создать документы из списка Excel
+    _name: Создать документы из Excel
+    _outputfolder: Директория вывода
+    _patterns: Шаблоны
+    _resultname: Шаблон имени файла
+    _template: Шаблон документа
+code: |-
+  obj vobj = JsonToObj(list)
+  arr.map alist
+  for vitem in vobj {
+       str pat = Macro(item(vitem, "pattern").str())
+       str out = Macro(item(vitem, "output").str())
+      map m
+      m["pattern"] = pat
+      m["output"] = out
+      alist += m
+  }
+  list = Json(obj(alist))

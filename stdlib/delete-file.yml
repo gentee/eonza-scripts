@@ -1,0 +1,30 @@
+settings:
+  name: delete-file
+  title: '#_deletefile#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: delete-file
+  helplang: ru
+  loglevel: 4
+  unrun: true
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: onlyexist
+  title: '#_onlyexist#'
+  type: 0    
+langs:
+  en:
+    _deletefile: Delete File
+    _desc: Delete file or empty folder
+    _onlyexist: Skip if file doesn't exist
+  ru:
+    _deletefile: Удалить файл
+    _desc: Удалить файл или пустую директорию
+    _onlyexist: Пропустить, если файл не существует
+code: |-
+  if onlyexist && !ExistFile(path) : return
+  Remove(path)

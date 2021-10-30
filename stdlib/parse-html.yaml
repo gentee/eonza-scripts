@@ -1,0 +1,72 @@
+settings:
+  name: parse-html
+  title: '#_name#'
+  path: '#.stdlib#/#.webscraping#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: parse-html
+  helplang: ru
+params:
+- name: html
+  title: '#_htmlvar#'
+  type: 2
+  options:
+    required: true
+- name: selector
+  title: '#_selector#'
+  type: 2
+- name: node
+  title: '#_node#'
+  type: 2
+- name: selectors
+  title: '#_selectors#'
+  type: 5
+  options:
+    list:
+    - name: selector
+      title: '#_selector#'
+      type: 2
+    - name: attrib
+      title: '#_attribute#'
+      type: 2
+    - name: var
+      title: '#.varname#'
+      type: 2
+      options:
+        required: true
+langs:
+  en:
+    _attribute: Attribute
+    _desc: Parse HTML
+    _htmlvar: HTML Variable or Node
+    _name: Parse HTML
+    _node: Node Name
+    _selector: Selector
+    _selectors: Selectors
+  ru:
+    _attribute: Атрибут
+    _desc: Парсинг HTML
+    _htmlvar: HTML переменная или узел
+    _name: Парсинг HTML
+    _node: Имя узла
+    _selector: Селектор
+    _selectors: Селекторы
+code: |+
+  handle root = ParseHTML(html)
+  obj vobj = JsonToObj(selectors)
+  for vitem in vobj {
+       str sel = item(vitem, "selector").str()
+       str attrib = item(vitem, "attrib").str()
+       handle ihtml = root
+       if *sel? : ihtml = FindHTML(root, sel)
+       SetVar(item(vitem, "var").str(), ?( *attrib?, AttribHTML(ihtml, attrib), TextHTML(ihtml)))
+  }
+  if *selector? && *node? {
+     handle subnode = FindHTML(root, selector)
+     for  item in  ChildrenHTML(subnode) {
+          SetVar(node, obj(item))
+          %body%
+     }
+  }
+

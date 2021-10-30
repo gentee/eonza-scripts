@@ -1,0 +1,62 @@
+settings:
+  name: smtp-server
+  title: '#_name#'
+  path: '#.stdlib#/#.messaging#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: smtp-server
+  helplang: ru
+params:
+- name: host
+  title: '#.host#'
+  type: 2
+  options:
+    required: true
+- name: port
+  title: '#.portlng#'
+  type: 2
+  options:
+    initial: "465"
+- name: consec
+  title: '#_consec#'
+  type: 3
+  options:
+    initial: ssl
+    items:
+    - title: '#.none#'
+      value: none
+    - title: SSL/TSL
+      value: ssl
+- name: username
+  title: '#.username#'
+  type: 2
+  options:
+    required: true
+- name: password
+  title: '#.password#'
+  type: 2
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _consec: Connection Security
+    _desc: Settings of SMTP server
+    _name: SMTP Server
+  ru:
+    _consec: Защита соединения
+    _desc: Настройки SMTP сервера
+    _name: SMTP сервер
+code: |
+  map  pars
+  pars["host"] = host
+  pars["port"] = port
+  pars["consec"] = consec
+  pars["username"] = username
+  pars["password"] = password
+  SetVar(resultvar, obj(pars))

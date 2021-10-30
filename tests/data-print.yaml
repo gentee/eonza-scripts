@@ -1,0 +1,80 @@
+settings:
+  name: data-print
+  title: Data Print
+  path: '#.tests#'
+  loglevel: 6
+tree:
+- name: set-variable
+  values:
+    list: []
+    name: data
+    subst: "0"
+    value: '#.data#'
+- name: if.eonza
+  open: true
+  values:
+    list:
+    - cmp: equal
+      next: "0"
+      not: false
+      value: ""
+      var: data
+  children:
+  - name: return.eonza
+- name: write-console
+  values:
+    text: |-
+      #data#
+      ---
+- name: if.eonza
+  open: true
+  values:
+    elsevar: parse
+    list:
+    - cmp: starts
+      next: "0"
+      not: false
+      value: '{'
+      var: data
+  children:
+  - name: parse-json
+    values:
+      resultvar: idata
+      value: '#data#'
+- name: if.eonza
+  open: true
+  values:
+    elsevar: parse
+    list: {}
+  children:
+  - name: parse-yaml
+    values:
+      resultvar: idata
+      value: '#data#'
+- name: set-variables
+  values:
+    list:
+    - value: '#idata.num#'
+      var: sum
+- name: foreach
+  open: true
+  values:
+    varitem: val
+    varname: idata.list
+  children:
+  - name: source-code
+    values:
+      code: |-
+        obj v = GetVarObj("val")
+        SetVar("sum", GetVarInt("sum") + item(v, "value").int())
+- name: write-console
+  values:
+    text: |+
+      Sum: #sum#
+      Output File: #idata.path#
+
+- name: write-file
+  values:
+    append: true
+    filename: '#idata.path#'
+    name: sum

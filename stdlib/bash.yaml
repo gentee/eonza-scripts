@@ -1,0 +1,42 @@
+settings:
+  name: bash
+  title: Bash
+  desc: '#_desc#'
+  path: "#.stdlib#/#.applications#"
+  loglevel: 4
+  unrun: true
+  help: bash
+  helplang: ru
+params:
+- name: source
+  title: '#_bashscript#'
+  type: 1
+  options:
+    required: true
+- name: sudo
+  title: '#_sudopass#'
+  type: 2    
+  options:
+    flags: "password"
+- name: wait
+  title: '#.waitfinish#'
+  type: 0
+  options:
+    initial: "1"
+langs:
+  en:
+    _desc: Run a bash script
+    _bashscript: Bash Script
+    _sudopass: sudo Password
+  ru:
+    _desc: Выполнить bash скрипт
+    _bashscript: Bash скрипт
+    _sudopass: Пароль sudo
+code: |-
+   if *sudo? { 
+      if wait : Run("sudo", "-S", "-k", "bash", stdin: buf(sudo + "\n" + source))
+      else : Start("sudo", "-S", "-k", "bash", stdin: buf(sudo + "\n" + source))
+   }
+   elif wait : Run("bash", stdin: buf(source))
+   else : Start("bash", stdin: buf(source))
+

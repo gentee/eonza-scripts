@@ -1,0 +1,28 @@
+settings:
+  name: fileinfo
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  loglevel: 6
+  unrun: true
+  help: fileinfo
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Get information about file
+    _name: File Info
+  ru:
+    _desc: Получить информацию о файле
+    _name: Информация о файле
+code: "if *varname == 0 : return\nbool exist = ExistFile(filename) \nSetVar(varname + \".exist\", exist)\nif !exist {\n    return\n}\nstr absname = AbsPath(filename)\nSetVar(varname, absname)\nfinfo fi = FileInfo(absname)\nSetVar(varname, obj(fi))\n/*SetVar(varname + \".attrib\", Format(\"%o\", fi.Mode))*/\nSetVar(varname + \".stime\", Format(\"YYYYMMDDHHmmss\", fi.Time))\n"

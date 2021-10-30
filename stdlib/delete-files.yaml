@@ -1,0 +1,70 @@
+settings:
+  name: delete-files
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  loglevel: 6
+  help: delete-files
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: recursive
+  title: '#.recursive#'
+  type: 0
+  options:
+    initial: "true"
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+tree:
+- name: file-list
+  values:
+    _advanced: |-
+      params:
+           recursive: "#recursive#"
+    ignore: '#ignore#'
+    path: '#path#'
+    pattern: '#pattern#'
+    recursive: false
+    resultvar: list
+- name: set-variable
+  values:
+    list:
+    - func: length
+      param: ""
+    name: count
+    value: list
+- name: source-code
+  open: true
+  values:
+    code: |2
+
+      obj iobj = GetVarObj("list")
+      int progress = ProgressStart(*iobj, 100, GetVar(`delfiles`), ``)
+      for item, index in arr(iobj) {
+              SetVar("index", index)
+              SetVar("filename", JoinPath(item(item, "dir").str(), item(item, "name").str()))
+              %body%
+               Progress(progress, 1)
+       }
+      ProgressEnd(progress)
+  children:
+  - name: delete-file
+    values:
+      path: '#filename#'
+langs:
+  en:
+    _desc: Delete files in the directory
+    _name: Delete Files
+    delfiles: Deleting files...
+  ru:
+    _desc: Удалить файлы директории
+    _name: Удалить файлы
+    delfiles: Удаление файлов...

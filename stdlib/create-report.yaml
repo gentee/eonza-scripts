@@ -1,0 +1,28 @@
+settings:
+  name: create-report
+  title: '#_name#'
+  path: '#.stdlib#/#.forms#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: create-report
+  helplang: ru
+params:
+- name: title
+  title: '#.title#'
+  type: 2
+  options:
+    required: true
+- name: body
+  title: '#.text#'
+  type: 1
+  options:
+    flags: preview
+langs:
+  en:
+    _desc: Create and display a report
+    _name: Create Report
+  ru:
+    _desc: Создать и показать отчёт
+    _name: Создать отчёт
+code: CreateReport(title, body)

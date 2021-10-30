@@ -1,0 +1,361 @@
+settings:
+  name: test-sql
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: localhost
+      var: host
+    - type: "2"
+      value: <h2>Test SQL Database commands</h2>
+      var: notice
+    - value: root
+      var: username
+    - value: eonzatest
+      var: dbname
+    - value: testeonzatbl
+      var: dbtable
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: notice
+    - options: ""
+      text: MySQL Server
+      type: "2"
+      var: host
+    - options: ""
+      text: Port (by default, 3306)
+      type: "2"
+      var: port
+    - options: '{"required": true}'
+      text: Username
+      type: "2"
+      var: username
+    - options: ""
+      text: '#.password#'
+      type: "9"
+      var: password
+    - options: '{"initial": "skip", "flags": "skip"}'
+      text: Skip All
+      type: "7"
+      var: ebtn
+    - options: '{"initial": "skipmysql", "flags": "skip"}'
+      text: Skip MySQL
+      type: "7"
+      var: ebtn
+    - options: '{"initial": "continue", "default":"true"}'
+      text: Continue
+      type: "7"
+      var: ebtn
+- name: return.eonza
+  values:
+    _ifcond: GetVar("ebtn") == "skip"
+- name: source-code
+  values:
+    _desc: MySQL tests
+    _ifcond: GetVar("ebtn") == "continue"
+    code: '%body%'
+  children:
+  - name: write-console
+    values:
+      text: Testing MySQL commands
+  - name: sql-connection
+    values:
+      host: '#host#'
+      password: '#password#'
+      port: '#port#'
+      resultvar: mysql
+      sqlserver: mysql
+      username: '#username#'
+  - name: sql-exec
+    values:
+      pars: {}
+      sqlcmd: |
+        CREATE DATABASE IF NOT EXISTS #dbname#;
+      sqlcon: mysql
+  - name: sql-exec
+    values:
+      pars:
+      - par: June 'OK'
+      - par: "101"
+      sqlcmd: |-
+        use `#dbname#`;
+        ---
+        DROP TABLE IF EXISTS `#dbtable#`;
+        # comment
+
+        CREATE TABLE #dbtable# (
+                id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), count INT, flag BOOLEAN);
+        ###
+        INSERT INTO `#dbtable#` (name, count, flag) VALUES(?, ?, TRUE);
+      sqlcon: mysql
+  - name: for.eonza
+    open: true
+    values:
+      final: "3"
+      index: index
+      initial: "1"
+    children:
+    - name: sql-exec
+      values:
+        pars:
+        - par: 'Number #index#'
+        sqlcmd: INSERT INTO `#dbtable#` (name, count, flag) VALUES(?, 200+#index#,
+          FALSE);
+        sqlcon: mysql
+  - name: sql-exec
+    values:
+      pars:
+      - par: July or August
+      - par: "1"
+      - par: "3"
+      sqlcmd: 'update #dbtable# set name = ?, count=count+100,  flag = ? where id
+        = ?'
+      sqlcon: mysql
+  - name: sql-close
+    values:
+      sqlcon: mysql
+  - name: sql-connection
+    values:
+      dbname: '#dbname#'
+      host: '#host#'
+      password: '#password#'
+      port: '#port#'
+      resultvar: mysql
+      sqlserver: mysql
+      username: '#username#'
+  - name: sql-query
+    values:
+      pars: {}
+      resultvar: allitems
+      sqlcon: mysql
+      sqlquery: 'select * from #dbtable# order by id'
+  - name: sql-row
+    values:
+      pars: []
+      resultvar: rec
+      sqlcon: mysql
+      sqlquery: 'select * from #dbtable# where id=1'
+  - name: sql-value
+    values:
+      pars:
+      - par: "2"
+      resultvar: id2
+      sqlcon: mysql
+      sqlquery: 'select * from #dbtable# where id >= ?'
+  - name: sql-value
+    values:
+      pars: []
+      resultvar: dbcount
+      sqlcon: mysql
+      sqlquery: 'select count(*) from #dbtable#'
+  - name: foreach
+    open: true
+    values:
+      varitem: item
+      varname: allitems
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#item.id#/#item.name#='
+        name: alist
+        value: ""
+  - name: sql-close
+    values:
+      sqlcon: mysql
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: 1/June 'OK'=2/Number 1=3/July or August=4/Number 3=
+        var: alist
+      - cmp: equal
+        not: false
+        value: "1"
+        var: allitems[2].flag
+      - cmp: equal
+        not: false
+        value: 1,June 'OK',101,1
+        var: '#rec.id#,#rec.name#,#rec.count#,#rec.flag#'
+      - cmp: equal
+        not: false
+        value: "4"
+        var: dbcount
+      - cmp: equal
+        not: false
+        value: "2"
+        var: id2
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: notice
+    - options: ""
+      text: PostgreSQL Server
+      type: "2"
+      var: host
+    - options: ""
+      text: Port (by default, 5432)
+      type: "2"
+      var: port
+    - options: '{"required": true}'
+      text: Username
+      type: "2"
+      var: username
+    - options: ""
+      text: '#.password#'
+      type: "9"
+      var: password
+    - options: ""
+      text: Database Name
+      type: "2"
+      var: dbname
+    - options: '{"initial": "skip", "flags": "skip"}'
+      text: Skip
+      type: "7"
+      var: ebtn
+    - options: '{"initial": "continue", "default":"true"}'
+      text: Continue
+      type: "7"
+      var: ebtn
+- name: return.eonza
+  values:
+    _ifcond: GetVar("ebtn") == "skip"
+- name: source-code
+  open: true
+  values:
+    _desc: PostgreSQL tests
+    _ifcond: ""
+    code: '%body%'
+  children:
+  - name: write-console
+    values:
+      text: Testing PostgreSQL commands
+  - name: sql-connection
+    values:
+      dbname: '#dbname#'
+      host: '#host#'
+      password: '#password#'
+      port: '#port#'
+      resultvar: pg
+      sqlserver: pg
+      username: '#username#'
+  - name: sql-exec
+    values:
+      pars:
+      - par: Postgres 'OK'
+      - par: "701"
+      sqlcmd: |-
+        DROP TABLE IF EXISTS "#dbtable#";
+        # comment
+        CREATE TABLE #dbtable# (
+               ID INT PRIMARY KEY     NOT NULL, name VARCHAR(255), count INT, flag BOOLEAN);
+        ###
+        INSERT INTO "#dbtable#" (id, name, count, flag) VALUES(1, $1, $2, TRUE);
+      sqlcon: pg
+  - name: for.eonza
+    open: true
+    values:
+      final: "3"
+      index: index
+      initial: "1"
+    children:
+    - name: sql-exec
+      values:
+        pars:
+        - par: 'Number #index#'
+        sqlcmd: INSERT INTO "#dbtable#" (id, name, count, flag) VALUES(1+#index#,
+          $1, 500+#index#, FALSE);
+        sqlcon: pg
+  - name: sql-exec
+    values:
+      pars:
+      - par: September or December
+      - par: "1"
+      - par: "3"
+      sqlcmd: 'update #dbtable# set name = $1, count=count+100,  flag = $2 where id
+        = $3'
+      sqlcon: pg
+  - name: sql-query
+    values:
+      pars: []
+      resultvar: allitems
+      sqlcon: pg
+      sqlquery: 'select * from #dbtable# order by id'
+  - name: sql-row
+    values:
+      pars: []
+      resultvar: rec
+      sqlcon: pg
+      sqlquery: 'select * from #dbtable# where id=1'
+  - name: sql-value
+    values:
+      pars:
+      - par: "3"
+      resultvar: id2
+      sqlcon: pg
+      sqlquery: 'select * from #dbtable# where id >= $1 order by id'
+  - name: sql-value
+    values:
+      pars: []
+      resultvar: pgcount
+      sqlcon: pg
+      sqlquery: 'select count(*) from #dbtable#'
+  - name: foreach
+    open: true
+    values:
+      varitem: item
+      varname: allitems
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#item.id#/#item.name#='
+        name: plist
+        value: ""
+  - name: sql-close
+    values:
+      sqlcon: pg
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: 1/Postgres 'OK'=2/Number 1=3/September or December=4/Number 3=
+        var: plist
+      - cmp: equal
+        not: false
+        value: "true"
+        var: allitems[2].flag
+      - cmp: equal
+        not: false
+        value: 1,Postgres 'OK',701,true
+        var: '#rec.id#,#rec.name#,#rec.count#,#rec.flag#'
+      - cmp: equal
+        not: false
+        value: "4"
+        var: pgcount
+      - cmp: equal
+        not: false
+        value: "3"
+        var: id2
+langs:
+  en:
+    _desc: Test SQL database
+    _name: Test SQL
+  ru:
+    _desc: Тестирование базы данных SQL
+    _name: Тест SQL

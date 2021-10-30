@@ -1,0 +1,23 @@
+settings:
+  name: open
+  title: '#_open#'
+  loglevel: 6
+  desc: '#_desc#'
+  path: "#.stdlib#/#.applications#"
+  help: open
+  helplang: ru
+  unrun: true
+params:
+- name: path
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Open a file or link in another app
+    _open: Open File or Link
+  ru:
+    _desc: Открыть файл или ссылку в другом приложении
+    _open: Открыть фaйл или ссылку
+code: Open(path)

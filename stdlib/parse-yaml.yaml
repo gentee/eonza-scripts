@@ -1,0 +1,30 @@
+settings:
+  name: parse-yaml
+  title: '#_name#'
+  path: '#.stdlib#/#.dataparsing#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: parse-yaml
+  helplang: ru
+params:
+- name: value
+  title: '#_yamldata#'
+  type: 1
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Parse yaml to a variable
+    _name: Parse YAML
+    _yamldata: YAML Data
+  ru:
+    _desc: Загрузить yaml в переменную
+    _name: Разобрать YAML
+    _yamldata: YAML данные
+code: SetVar(resultvar, YamlToObj(value))

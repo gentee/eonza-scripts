@@ -1,0 +1,48 @@
+settings:
+  name: delete-empty-folders
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  loglevel: 6
+  help: delete-empty-folders
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+tree:
+- name: file-list
+  values:
+    _optional: 'onlydirs: true'
+    path: '#path#'
+    recursive: "true"
+    resultvar: list
+- name: foreach
+  open: true
+  values:
+    varitem: item
+    varname: list
+  children:
+  - name: source-code
+    open: true
+    values:
+      code: |-
+        obj list = GetVarObj("item")
+        str dirname = JoinPath(item(list, "dir").str(),item(list, "name").str())
+        if IsEmptyDir(dirname) {
+            SetVar("dirname", dirname)
+            %body%
+        }
+    children:
+    - name: delete-file
+      values:
+        path: '#dirname#'
+langs:
+  en:
+    _desc: Delete all empty subdirectories
+    _name: Delete Empty Folders
+  ru:
+    _desc: Удалить все пустые поддиректории
+    _name: Удалить пустые папки

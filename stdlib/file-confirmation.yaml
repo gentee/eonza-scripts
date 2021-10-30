@@ -1,0 +1,123 @@
+settings:
+  name: file-confirmation
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.forms#"    
+  loglevel: 6
+  unrun: true
+  help: file-confirmation
+  helplang: ru
+params:
+- name: existfile
+  title: '#_existfile#'
+  type: 2
+  options:
+    required: true
+- name: newfile
+  title: '#_newfileinfo#'
+  type: 2
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+- name: hideapply
+  title: '#_hideapply#'
+  type: 0
+  options:
+    optional: true
+    initial: "false"
+tree:
+- name: fileinfo
+  values:
+    filename: '#existfile#'
+    varname: fi
+- name: error.eonza
+  values:
+    _ifcond: '!fi.exist'
+    code: "1"
+    text: '#lng.notexist#'
+- name: set-variable
+  values:
+    list:
+    - func: split
+      param: '#.s#'
+    name: fid
+    value: '#fi.time#'
+- name: set-variable
+  values:
+    list:
+    - func: split
+      param: ','
+    name: nfile
+    value: '#newfile#'
+- name: set-variable
+  values:
+    list:
+    - func: split
+      param: '#.s#'
+    name: newdt
+    value: '#nfile[1]#'
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: lng.exist
+    - options: ""
+      text: ""
+      type: "6"
+      var: lng.table
+    - options: '{"if": "!hideapply"}'
+      text: '#lng.apply#'
+      type: "0"
+      var: toall
+    - options: '{"initial": "overwrite","default":"true"}'
+      text: '#.replace#'
+      type: "7"
+      var: btn
+    - options: '{"initial": "skip","default":"true"}'
+      text: '#.skip#'
+      type: "7"
+      var: btn
+    - options: '{"initial": "savecopy","default":"true"}'
+      text: '#.savecopy#'
+      type: "7"
+      var: btn
+- name: source-code
+  values:
+    code: |
+      map ret = {"all": GetVar("toall"), "btn": GetVar("btn")}
+      ResultVar(GetVar("resultvar"), obj(ret))
+langs:
+  en:
+    _desc: Show confirmation when copying the file
+    _existfile: Existing File
+    _hideapply: Hide Apply To All
+    _name: File Confirmation
+    _newfileinfo: New File Information
+    lng.apply: Apply this action to all files
+    lng.efile: Existing File
+    lng.exist: <div>File <strong>#existfile#</strong> already exists.</div>
+    lng.nfile: New File
+    lng.notexist: 'File #existfile# doesn''t exist.'
+    lng.table: |-
+      <table class="formtable">
+      <tr><td></td><td>#.size#</td><td>#.date#</td><td>#.time#</td></tr>
+      <tr><td>#lng.efile#</td><td>#fi.size#</td><td>#fid[0]#</td><td>#fid[1]#</td></tr>
+      <tr><td>#lng.nfile#</td><td>#nfile[0]#</td><td>#newdt[0]#</td><td>#newdt[1]#</td></tr>
+      </table>
+  ru:
+    _desc: Показывать подтверждение при копировании файла
+    _existfile: Существующий файл
+    _hideapply: Скрыть Применить ко всем
+    _name: Подтверждение файла
+    _newfileinfo: Информация о новом файле
+    lng.apply: Применить действие ко всем файлам
+    lng.efile: Существующий файл
+    lng.exist: <div>Файл <strong>#existfile#</strong> уже существует.</div>
+    lng.nfile: Новый файл
+    lng.notexist: 'Файл #existfile# не существует.'

@@ -1,0 +1,25 @@
+settings:
+  name: sleep.eonza
+  title: '#_sleep#'
+  desc: '#_desc#'  
+  path: "#.stdlib#/#.programming#"
+  help: sleep
+  helplang: ru
+  loglevel: 6
+params:
+- name: timeout
+  title: '#_timeout#'
+  type: 4
+  options:
+    initial: "1000"
+    required: true
+langs:
+  en:
+    _desc: Stop execution for a specified time
+    _sleep: Sleep
+    _timeout: Timeout (msec)
+  ru:
+    _desc: Остановить выполнение на указанное время
+    _sleep: Пауза
+    _timeout: Время ожидания (msec)
+code: sleep(timeout)

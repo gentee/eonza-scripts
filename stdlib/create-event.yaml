@@ -1,0 +1,41 @@
+settings:
+  name: create-event
+  title: '#_name#'
+  path: '#.stdlib#/#.applications#'
+  desc: '#_desc#'
+  loglevel: 4
+  unrun: true
+  help: create-event
+  helplang: ru
+params:
+- name: event
+  title: '#_event#'
+  type: 2
+  options:
+    required: true
+- name: data
+  title: '#_data#'
+  type: 1
+tree:
+- name: httprequest
+  values:
+    headers: []
+    method: POST
+    pars:
+    - name: name
+      value: '#event#'
+    - name: data
+      value: '#data#'
+    url: http://localhost:#.eonzaport#/api/event
+    varname: ret
+langs:
+  en:
+    _data: Attached Data
+    _desc: Create an event in Scheduler
+    _event: Event Name
+    _name: Create Event
+  ru:
+    _data: Прикреплённые данные
+    _desc: Создать событие в планировщике
+    _event: Имя события
+    _name: Создать событие

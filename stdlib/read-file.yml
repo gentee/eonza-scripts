@@ -1,0 +1,29 @@
+settings:
+  name: read-file
+  title: '#_readfile#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: read-file
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: name
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Read file to variable
+    _readfile: Read File
+  ru:
+    _desc: Прочитать файл в переменную
+    _readfile: Прочитать файл
+code: |-
+  SetVar(name, ReadFile(filename))

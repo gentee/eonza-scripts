@@ -1,0 +1,34 @@
+settings:
+  name: run.eonza
+  title: '#_runapp#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.applications#"
+  help: run
+  helplang: ru
+  loglevel: 4
+  unrun: true
+params:
+- name: path
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: cmdline
+  title: '#_cmdline#'
+  type: 1
+- name: wait
+  title: '#.waitfinish#'
+  type: 0
+langs:
+  en:
+    _desc: Run the application with the parameters
+    _runapp: Run Application
+    _cmdline: Command-line Parameters
+  ru:
+    _desc: Запустить приложение с параметрами
+    _runapp: Запустить приложение
+    _cmdline: Параметры командной строки
+code: |-
+  arr params = SplitCmdLine(cmdline)
+  if wait : Run(path, params)
+  else : Start(path, params)

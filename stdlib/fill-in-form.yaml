@@ -1,0 +1,38 @@
+settings:
+  name: fill-in-form
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.browser#"    
+  loglevel: 6
+  unrun: true
+  help: fill-in-form
+  helplang: ru
+params:
+- name: url
+  title: URL
+  type: 2
+  options:
+    required: true
+- name: list
+  title: '#_inputs#'
+  type: 5
+  options:
+    list:
+    - name: id
+      title: '#_idname#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 2
+langs:
+  en:
+    _desc: Fill in the form on the web-page
+    _idname: ID or Name of HTML control
+    _inputs: List of input controls
+    _name: Fill In Form
+  ru:
+    _desc: Заполнить форму на веб-странице
+    _idname: ID или имя HTML элемента
+    _inputs: Список input элементов
+    _name: Заполнить форму
+code: FillForm(url,list)

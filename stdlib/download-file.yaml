@@ -1,0 +1,39 @@
+settings:
+  name: download-file
+  title: '#_name#'
+  path: '#.stdlib#/#.network#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: download-file
+  helplang: ru
+params:
+- name: url
+  title: '#.url#'
+  type: 2
+  options:
+    required: true
+- name: dest
+  title: '#.destpath#'
+  type: 2
+  options:
+    required: true
+- name: newname
+  title: '#_newname#'
+  type: 2
+langs:
+  en:
+    _desc: Download and save file
+    _name: Download File
+    _newname: New Filename
+  ru:
+    _desc: Скачать и сохранить файл
+    _name: Скачать файл
+    _newname: Новое имя файла
+code: |
+  if *newname == 0 {
+     arr paths = Split(url, `/`)
+     newname = paths[*paths-1]
+     int off = Find(newname, `?`)
+     if off > 0 : newname = Substr(newname, 0, off)
+  }
+  Download(url, JoinPath(dest, newname))

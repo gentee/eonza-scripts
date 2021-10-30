@@ -1,0 +1,78 @@
+settings:
+  name: send-telegram-message
+  title: '#_name#'
+  path: '#.stdlib#/#.messaging#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: send-telegram-message
+  helplang: ru
+params:
+- name: token
+  title: '#_bottoken#'
+  type: 2
+  options:
+    required: true
+- name: chat
+  title: '#_channel#'
+  type: 2
+  options:
+    required: true
+- name: msg
+  title: '#.text#'
+  type: 1
+  options:
+    required: true
+- name: exiterr
+  title: '#.exitonerror#'
+  type: 0
+tree:
+- name: httprequest
+  values:
+    headers: []
+    method: GET
+    pars:
+    - name: chat_id
+      value: '#chat#'
+    - name: text
+      value: '#msg#'
+    url: https://api.telegram.org/bot#token#/sendMessage
+    varname: ret
+- name: if.eonza
+  open: true
+  values:
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: exiterr
+  children:
+  - name: parse-json
+    values:
+      resultvar: answer
+      value: '#ret#'
+  - name: if.eonza
+    open: true
+    values:
+      list:
+      - cmp: equal
+        next: "0"
+        not: false
+        value: ""
+        var: answer.ok
+    children:
+    - name: error.eonza
+      values:
+        code: "100"
+        text: '#ret#'
+langs:
+  en:
+    _bottoken: Bot API Token
+    _channel: Channel Name or ID
+    _desc: Send a message to Telegram channel
+    _name: Send Telegram Message
+  ru:
+    _bottoken: API токен бота
+    _channel: Имя или ID канала
+    _desc: Отправить сообщение в Telegram канал
+    _name: Отправить сообщение в Telegram

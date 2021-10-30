@@ -1,0 +1,64 @@
+settings:
+  name: assertions
+  title: '#_name#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: assertions
+  helplang: ru
+  path: "#.stdlib#/#.programming#"
+params:
+- name: errmsg
+  title: '#.errmessage#'
+  type: 2
+- name: list
+  title: '#_name#'
+  type: 5
+  options:
+    list:
+    - name: var
+      title: '#.varname#'
+      type: 2
+    - name: not
+      title: '#.negation#'
+      type: 0
+      options:
+        output:
+        - ""
+        - NOT
+    - name: cmp
+      title: '#.comparetype#'
+      type: 3
+      options:
+        type: str
+        items:
+        - title: '#.equal#'
+          value: equal
+        - title: '#.fileexists#'
+          value: fileexists
+        - title: '#.envexists#'
+          value: envexists
+        - title: '#.regexmatch#'
+          value: match
+    - name: value
+      title: '#.value#'
+      type: 2
+langs:
+  en:
+    _desc: Check Assertions
+    _name: Assertions
+    assertions.deferr: Assertion failed
+  ru:
+    _desc: Проверить утверждения
+    _name: Утверждения
+    assertions.deferr: Утверждение ошибочно
+code: |
+  obj vobj = JsonToObj(list)
+  for vitem in vobj {
+       if !Condition(map(vitem)) {
+            str msg = errmsg
+            if *msg == 0 : msg = GetVar("assertions.deferr")
+            str assert = "\{item(vitem, "var").str()} \{?(item(vitem, "not").bool(), `not `, ``)} \{item(vitem, "cmp").str()} \{item(vitem, "value").str()}"
+            error(ASSERT, "\{msg} (\{assert})")
+      }
+  }

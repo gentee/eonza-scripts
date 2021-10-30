@@ -1,0 +1,335 @@
+settings:
+  name: test121
+  title: Test - 121
+  path: '#.tests#'
+  loglevel: 6
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: '#.date#'
+      var: date
+    - value: '#.time#'
+      var: t
+    - value: Initial Value
+      var: before
+    - value: after
+      var: aftername
+    - value: First
+      var: myvalue
+    - value: |-
+        12 34
+        56=78
+      var: morelines
+- name: set-variable
+  values:
+    list:
+    - func: length
+      param: ""
+    name: lentime
+    subst: "1"
+    value: '#t#'
+- name: set-variable
+  values:
+    list: {}
+    name: '#aftername#'
+    subst: "2"
+    value: '#before#'
+- name: set-variables
+  values:
+    list:
+    - value: Result Value
+      var: before
+- name: parse-json
+  values:
+    resultvar: otmp
+    value: |-
+      {
+          "list": ["0", "1", "2"],
+          "name": "John",
+          "username": "Иван Иванович"
+      }
+- name: source-code
+  open: true
+  values:
+    _desc: Test Remove Lines
+    code: '%body%'
+  children:
+  - name: set-variable
+    values:
+      list: []
+      name: lines
+      subst: "1"
+      value: |-
+        1,qwerty
+        2,test line,4
+        3,#before#,24
+        4,remove lines,11
+  - name: remove-lines
+    values:
+      resultvar: filtered
+      text: '#lines#'
+      toremove: |-
+        test
+        Value
+        lines
+  - name: remove-lines
+    values:
+      resultvar: cleared
+      text: '#lines#'
+      toremove: "2"
+  - name: remove-lines
+    values:
+      resultvar: empty
+      text: '#lines#'
+      toremove: ','
+- name: foreach-line
+  values:
+    text: |
+      John
+      7
+      Doe
+      #morelines#
+    varname: item
+  children:
+  - name: set-variable
+    values:
+      list:
+      - func: substr
+        param: "0:3"
+      name: line
+      subst: "1"
+      value: '#item#'
+  - name: set-variable
+    values:
+      list:
+      - func: append
+        param: '#line#'
+      name: forline
+      subst: "1"
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: Joh7Doe12 56=
+      var: forline
+    - cmp: equal
+      not: false
+      value: ""
+      var: empty
+    - cmp: match
+      not: false
+      value: 1,(.+)\n4,(.+)$
+      var: cleared
+    - cmp: equal
+      not: false
+      value: 1,qwerty
+      var: filtered
+- name: source-code
+  values:
+    _desc: Test Append scripts
+    code: '%body%'
+  children:
+  - name: append-to-map
+    values:
+      key: company
+      name: otmp
+      subst: "1"
+      value: My Inc.
+  - name: append-to-map
+    values:
+      key: vote
+      name: otmp.map
+      subst: "1"
+      value: '#before#'
+  - name: append-to-map
+    values:
+      key: ok
+      name: otmp.map
+      subst: "0"
+      value: Like
+  - name: append-to-map
+    values:
+      key: today
+      name: mymap
+      subst: "1"
+      value: '#.date#'
+  - name: append-to-map
+    values:
+      key: '#myvalue#'
+      name: mymap
+      subst: "0"
+      value: Test
+  - name: append-to-map
+    values:
+      key: '#myvalue#'
+      name: mymap
+      subst: "0"
+      value: Over
+  - name: append-to-array
+    values:
+      name: otmp.list
+      subst: "1"
+      value: '#myvalue#'
+  - name: append-to-array
+    values:
+      name: otmp.newarr
+      subst: "0"
+      value: newarr
+  - name: append-to-array
+    values:
+      name: my
+      subst: "0"
+      value: '#before#'
+  - name: append-to-array
+    values:
+      name: my
+      subst: "0"
+      value: otmp.name
+  - name: append-to-array
+    values:
+      name: my
+      subst: "1"
+      value: '#otmp.list[3]#'
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: '#.year##.month##.day#'
+        var: date
+      - cmp: equal
+        not: false
+        value: "6"
+        var: lentime
+      - cmp: equal
+        not: false
+        value: '#before#'
+        var: after
+      - cmp: equal
+        not: false
+        value: Result Value
+        var: '#my[0]#'
+      - cmp: equal
+        not: false
+        value: John
+        var: '#my[1]#'
+      - cmp: equal
+        not: false
+        value: First
+        var: '#my[2]#'
+      - cmp: equal
+        not: false
+        value: newarr
+        var: '#otmp.newarr[0]#'
+      - cmp: equal
+        not: false
+        value: '#date#'
+        var: mymap.today
+      - cmp: equal
+        not: false
+        value: Over
+        var: mymap.First
+      - cmp: equal
+        not: false
+        value: '#before#'
+        var: otmp.map.vote
+      - cmp: equal
+        not: false
+        value: Like
+        var: otmp.map.ok
+      - cmp: equal
+        not: false
+        value: My Inc.
+        var: otmp.company
+- name: source-code
+  values:
+    _desc: Contains in If Statement
+    code: '%body%'
+  children:
+  - name: if.eonza
+    open: true
+    values:
+      list:
+      - cmp: contains
+        next: "0"
+        not: false
+        value: Value
+        var: before
+    children:
+    - name: set-variable
+      values:
+        list: {}
+        name: contains
+        subst: "1"
+        value: ok
+  - name: if.eonza
+    open: true
+    values:
+      list:
+      - cmp: contains
+        next: "0"
+        not: false
+        value: Иван
+        var: otmp.username
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: иван
+        name: contains
+        subst: "1"
+        value: ""
+  - name: if.eonza
+    open: true
+    values:
+      list:
+      - cmp: contains
+        next: "0"
+        not: false
+        value: John
+        var: otmp.username
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: john
+        name: contains
+        subst: "1"
+        value: ""
+  - name: while
+    open: true
+    values:
+      list:
+      - cmp: contains
+        next: "0"
+        not: true
+        value: end
+        var: contains
+    children:
+    - name: set-variable
+      values:
+        _ifcond: '*GetVar("contains") > 7'
+        list:
+        - func: append
+          param: end
+        name: contains
+        subst: "1"
+    - name: set-variable
+      values:
+        _ifcond: ""
+        list:
+        - func: append
+          param: x
+        name: contains
+        subst: "1"
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: okиванxxendx
+        var: contains

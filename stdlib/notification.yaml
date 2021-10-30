@@ -1,0 +1,22 @@
+settings:
+  name: notification
+  title: '#_name#'
+  path: '#.stdlib#/#.forms#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: notification
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+  options:
+    required: true
+langs:
+  en:
+    _desc: Send notification
+    _name: Notification
+  ru:
+    _desc: Отправить уведомление
+    _name: Уведомление
+code: SendNotification(text)

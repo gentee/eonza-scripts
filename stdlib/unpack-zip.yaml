@@ -1,0 +1,41 @@
+settings:
+  name: unpack-zip
+  title: '#_name#'
+  path: '#.stdlib#/#.archive#'
+  desc: '#_desc#'
+  loglevel: 4
+  help: unpack-zip
+  helplang: ru
+params:
+- name: zname
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: path
+  title: '#.destpath#'
+  type: 2
+  options:
+    required: true
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+langs:
+  en:
+    _desc: Unpack .zip archive
+    _name: Unpack ZIP
+  ru:
+    _desc: Распаковать .zip архив
+    _name: Распаковать ZIP
+code: |-
+  arr patterns exclude
+  if *pattern? {
+      patterns = Split(pattern, `,`)
+  }
+  if *ignore? {
+      exclude  = Split(ignore, `,`)
+  }
+  UnpackZip(zname, path, patterns, exclude)

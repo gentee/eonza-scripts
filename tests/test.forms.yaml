@@ -1,0 +1,30 @@
+settings:
+  name: test.forms
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.tests#"
+  loglevel: 6
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: "123"
+      var: mypsw
+- name: form
+  values:
+    list:
+    - options: '{"required": true}'
+      text: Enter Password
+      type: "9"
+      var: mypsw
+    - options: ""
+      text: Name
+      type: "2"
+      var: name
+langs:
+  en:
+    _desc: Default tests for Forms group
+    _name: Test - Forms
+  ru:
+    _desc: Тесты для группы Формы
+    _name: Тест - Формы

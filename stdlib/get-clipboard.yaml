@@ -1,0 +1,31 @@
+settings:
+  name: get-clipboard
+  title: '#_name#'
+  path: '#.stdlib#/#.text#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: get-clipboard
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: clear
+  title: '#_clear#'
+  type: 0
+langs:
+  en:
+    _clear: Clear Clipboard
+    _desc: |
+      Get text from clipboard
+    _name: Get Clipboard
+  ru:
+    _clear: Очистить буфер обмена
+    _desc: Получить текст из буфера обмена
+    _name: Получить буфер обмена
+code: |
+  SetVar(varname, GetClipboard())
+  if clear : CopyClipboard("")

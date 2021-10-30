@@ -1,0 +1,24 @@
+settings:
+  name: crypto-funcs
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.cryptography#"  
+  loglevel: 6
+  unrun: true
+tree:
+- name: source-code
+  values:
+    code: "struct ECHeader {\n     str Header  \n     int Version  \n     int Algorithm\n
+      \    str Filename\n     int Size\n     int Time      \n     int CRC \n}\nconst
+      {\n   ECHEADER = `EONZACRYPTO`\n   ECVERSION = 1\n   ECSIZE = 0x100000  // 1
+      MB\n   ECAES256 = 1\n}"
+    external: true
+langs:
+  en:
+    _desc: Common crypto constants and structures
+    _name: Crypto Definitions
+  ru:
+    _desc: Общие крипто константы и структуры
+    _name: Крипто определения
+code: |2+
+

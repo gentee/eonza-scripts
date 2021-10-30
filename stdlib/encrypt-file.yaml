@@ -1,0 +1,65 @@
+settings:
+  name: encrypt-file
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.cryptography#"  
+  loglevel: 4
+  help: encrypt-file
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: algorithm
+  title: '#.algorithm#'
+  type: 3
+  options:
+    items:
+    - title: AES-256
+- name: password
+  title: '#.password#'
+  type: 2
+  options:
+    required: true
+- name: destpath
+  title: '#.destpath#'
+  type: 2
+- name: encfile
+  title: '#.outputfile#'
+  type: 2
+tree:
+- name: crypto-funcs
+- name: set-variable
+  values:
+    _ifcond: '*GetVar("encfile") == 0'
+    list:
+    - func: filename
+      param: ""
+    name: encfile
+    value: '#filename#.ec'
+- name: source-code
+  values:
+    code: "str psw = GetVar(\"password\")\nstr fname = AbsPath(GetVar(\"filename\"))\nstr
+      path = GetVar(\"destpath\")\nif *path == 0 {\n      path = Dir(fname)\n}\npath
+      = JoinPath(path, GetVar(\"encfile\"))\nif fname == path : error(101, \"Encrypt
+      File:  Source file equals the output file\")\nfile fin = OpenFile(fname, READONLY)\nfile
+      fout = OpenFile(path, CREATE | TRUNC)\nfinfo fi = FileInfo(fin)\nECHeader  head
+      = {\n     Header: ECHEADER,\n     Version: ECVERSION,\n     Algorithm: ECAES256,\n
+      \    Filename: BaseName(fname),\n     Time: int(fi.Time),\n     Size: fi.Size\n}\nbuf
+      tmp = StructEncode(head)\nbuf out \nEncodeInt(out, *tmp) \nout += tmp\nWrite(fout,
+      out)\nint size \nint progress = ProgressStart(fi.Size, 50, Format( GetVar(\"lng.encrypt\"),fname,
+      path), ``)\nwhile size < fi.Size {\n     int shift = Min(ECSIZE, fi.Size-size)\n
+      \    buf bin &= Read(fin, shift)\n     out &= AESEncrypt(psw, bin)\n     buf
+      bi\n     Write(fout, EncodeInt(bi, *out))\n     Write(fout, out)\n     Progress(progress,
+      shift)\n     size += ECSIZE\n}\nProgressEnd(progress)\nCloseFile(fout)\nCloseFile(fin)"
+langs:
+  en:
+    _desc: Encrypt the file
+    _name: Encrypt File
+    lng.encrypt: Encrypting %s to %s
+  ru:
+    _desc: Зашифровать файл
+    _name: Зашифровать файл
+    lng.encrypt: Шифрование %s в %s

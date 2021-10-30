@@ -1,0 +1,41 @@
+settings:
+  name: unpack-targz
+  title: '#_name#'
+  path: '#.stdlib#/#.archive#'
+  desc: '#_desc#'
+  loglevel: 4
+  help: unpack-targz
+  helplang: ru
+params:
+- name: zname
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: path
+  title: '#.destpath#'
+  type: 2
+  options:
+    required: true
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+langs:
+  en:
+    _desc: Unpack .tar.gz archive
+    _name: Unpack TAR.GZ
+  ru:
+    _desc: Распаковать .tar.gz архив
+    _name: Распаковать TAR.GZ
+code: |-
+  arr patterns exclude
+  if *pattern? {
+      patterns = Split(pattern, `,`)
+  }
+  if *ignore? {
+      exclude  = Split(ignore, `,`)
+  }
+  UnpackTarGz(zname, path, patterns, exclude)

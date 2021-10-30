@@ -1,0 +1,34 @@
+settings:
+  name: try
+  title: '#_name#'
+  path: '#.stdlib#/#.programming#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: try-catch
+  helplang: ru
+params:
+- name: title
+  title: '#try.title#'
+  type: 2
+langs:
+  en:
+    _desc: 'Handle any errors that have occurred '
+    _name: Try / Catch
+    try.title: Title of Error Message
+  ru:
+    _desc: Обработать все возникающие ошибки
+    _name: Попытка / Перехват
+    try.title: Заголовок сообщения об ошибке
+code: "try {\n   %body%\n} catch err {\n   SetVar(\"msgvar\", `<div style=\"display:flex;\"><div
+  style=\"margin-right: 1rem;\"><i class=\"fas fa-times-circle fa-3x\" style=\"color:
+  #e53935\"></i></div><div>\n    %{title}\n    <div style=\"padding: 0.5em 1em; margin-top:
+  0.5em;background-color:#FFEAEA;color: #ff5252;font-weight: bold\">%{ErrText(err)}</div>\n</div></div>`)\n
+  \  SetVar( \"buttons\", `[{\"type\": \"7\", \"var\": \"btn\", \"text\": \"#.retry#\",
+  \"options\": \"{ \\\"initial\\\": \\\"retry\\\", \\\"default\\\": \\\"true\\\"}\"},\n
+  \                 {\"type\": \"7\", \"var\": \"btn\", \"text\": \"#.abort#\", \"options\":
+  \"{\\\"initial\\\": \\\"abort\\\"}\"},\n                  {\"type\": \"7\", \"var\":
+  \"btn\", \"text\": \"#.ignore#\", \"options\": \"{\\\"initial\\\": \\\"ignore\\\"}\"}\n
+  \      ]`)\n    Form( `[{\"options\":\"\",\"text\":\"\",\"type\":\"6\",\"var\":\"msgvar\"},{\"options\":\"\",\"text\":\"\",\"type\":\"8\",\"var\":\"buttons\"}]`
+  )\n    switch GetVar(\"btn\") \n    case \"retry\" : retry\n    case \"ignore\"
+  : recover\n}\n\n"

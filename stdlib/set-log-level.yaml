@@ -1,0 +1,36 @@
+settings:
+  name: set-log-level
+  title: '#_setloglevel#'
+  desc: '#_desc#'  
+  path: "#.stdlib#/#.logconsole#"    
+  help: set-log-level
+  helplang: ru
+  loglevel: 6
+params:
+- name: level
+  title: '#.loglevel#'
+  type: 3
+  options:
+    initial: LOG_INFO
+    type: int
+    items:
+    - title: '#.disable#'
+      value: LOG_DISABLE
+    - title: '#.error#'
+      value: LOG_ERROR
+    - title: '#.warning#'
+      value: LOG_WARN
+    - title: '#.formdata#'
+      value: LOG_FORM
+    - title: '#.info#'
+      value: LOG_INFO
+    - title: '#.debug#'
+      value: LOG_DEBUG
+langs:
+  en:
+    _desc: Set logging level
+    _setloglevel: Set Log Level
+  ru:
+    _desc: Установить уровень записи в лог
+    _setloglevel: Установить уровень лога
+code: SetLogLevel(level)

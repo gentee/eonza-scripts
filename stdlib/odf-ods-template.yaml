@@ -1,0 +1,30 @@
+settings:
+  name: odf-ods-template
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 4
+  unrun: true
+  help: ods-template
+  helplang: ru
+params:
+- name: template
+  title: '#_template#'
+  type: 2
+  options:
+    required: true
+- name: outputfile
+  title: '#.outputfile#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Replace variables in ODS template
+    _name: ODS Template
+    _template: Template (*.ods)
+  ru:
+    _desc: Заменить переменные в ODS шаблоне
+    _name: Шаблон ODS
+    _template: Шаблон (*.ods)
+code: OdsTemplate(template, outputfile)

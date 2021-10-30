@@ -1,0 +1,147 @@
+settings:
+  name: test-html
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+tree:
+- name: set-variable
+  values:
+    list: []
+    name: html
+    subst: "0"
+    value: "<!DOCTYPE html>\n<html>\n<head> \n  <meta charset=\"utf-8\">\n  <meta
+      name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n  <meta
+      name=\"description\" content=\"Test description\">\n  <title>HTML Parsing</title>\n
+      \ <link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\"> \n  <link
+      rel=\"shortcut icon\" href=\"/favicon.ico\" type=\"image/x-icon\">\n  <link
+      rel=\"stylesheet\" href=\"/css/vuetify.min.css\">\n  <link rel=\"stylesheet\"
+      href=\"/css/fontawesome.min.css\">\n  <link rel=\"stylesheet\" href=\"/css/eonza.css\">\n</head>\n<body>\n
+      \   <div id=\"app\">\n          <p>Test sentence <small>big</small>.</p>\n          <ul>\n<li
+      class=\"link\"><a href=\"https://www.eonza.org\">Eonza</a></li>\n<li class=\"link\"><a
+      href=\"https://www.google.com\">Google</a></li>\n<li class=\"link\"><a href=\"https://www.yandex.ru\">Yandex</a></li>\n
+      \         </ul>\n    </div>\n</body>\n</html>"
+- name: parse-html
+  open: true
+  values:
+    html: '#html#'
+    node: nodecss
+    selector: link[rel="stylesheet"]
+    selectors:
+    - attrib: ""
+      selector: title
+      var: title
+    - attrib: ""
+      selector: unknown
+      var: unknown
+    - attrib: content
+      selector: meta[name="description"]
+      var: desc
+    - attrib: ""
+      selector: '#app p'
+      var: par
+  children:
+  - name: parse-html
+    open: true
+    values:
+      html: nodecss
+      selectors:
+      - attrib: href
+        selector: ""
+        var: cssref
+  - name: assertions
+    values:
+      errmsg: css parse
+      list:
+      - cmp: equal
+        not: false
+        value: '#cssref#'
+        var: nodecss.href
+- name: parse-html
+  open: true
+  values:
+    html: html
+    node: links
+    selector: .link
+    selectors:
+    - attrib: ""
+      selector: p small
+      var: small
+  children:
+  - name: parse-html
+    open: true
+    values:
+      html: links
+      selectors:
+      - attrib: href
+        selector: a
+        var: link
+      - attrib: ""
+        selector: ""
+        var: linktext
+  - name: assertions
+    values:
+      errmsg: link error
+      list:
+      - cmp: equal
+        not: false
+        value: link
+        var: links.class
+      - cmp: equal
+        not: false
+        value: '#links#'
+        var: linktext
+  - name: set-variable
+    values:
+      list:
+      - func: append
+        param: '#link#'
+      name: refs
+      subst: "0"
+      value: ""
+- name: replace
+  values:
+    list:
+    - new: ""
+      old: https://www.
+    varname: refs
+- name: assertions
+  values:
+    errmsg: var error
+    list:
+    - cmp: equal
+      not: false
+      value: eonza.orggoogle.comyandex.ru
+      var: refs
+    - cmp: equal
+      not: false
+      value: big
+      var: small
+    - cmp: equal
+      not: false
+      value: ""
+      var: unknown
+    - cmp: equal
+      not: false
+      value: HTML Parsing
+      var: title
+    - cmp: equal
+      not: false
+      value: Test description
+      var: desc
+    - cmp: equal
+      not: false
+      value: Test sentence big.
+      var: par
+- name: write-console
+  values:
+    text: |+
+      Test HTML Parsing...PASSED
+
+langs:
+  en:
+    _desc: Test HTML parsing
+    _name: Test HTML
+  ru:
+    _desc: Тест HTML парсинга
+    _name: Тест HTML

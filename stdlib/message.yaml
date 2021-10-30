@@ -1,0 +1,180 @@
+settings:
+  name: message
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.forms#"      
+  help: message
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: icon
+  title: '#.type#'
+  type: 3
+  options:
+    initial: question-circle
+    type: str
+    items:
+    - title: '#.question#'
+      value: question-circle
+    - title: '#.info#'
+      value: info-circle
+    - title: '#.warning#'
+      value: exclamation-triangle
+    - title: '#.error#'
+      value: times-circle
+- name: text
+  title: '#.text#'
+  type: 1
+  options:
+    required: true
+- name: retbtn
+  title: '#.resultvar#'
+  type: 2
+  options:
+    initial: msgbtn
+- name: custbtns
+  title: '#_custombtns#'
+  type: 5
+  options:
+    list:
+    - name: text
+      title: '#.name#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 2
+tree:
+- name: source-code
+  values:
+    code: "str color = \"1565C0\"\nswitch GetVar(\"icon\") \ncase \"info-circle\": color = \"4CAF50\"; SetVar(\"info\", 1)\ncase \"exclamation-triangle\": color = \"FDD835\"; SetVar(\"warn\", 1)\ncase \"times-circle\": color = \"E53935\"; SetVar(\"err\", 1)\ndefault: SetVar(\"quest\", 1)\nSetVar(\"color\", color)\n"
+- name: set-variable
+  values:
+    name: msgvar
+    value: '<div style="display:flex;"><div style="margin-right: 1rem;"><i class="fas fa-#icon# fa-3x" style="color: ##color#"></i></div><div>#text#</div></div>'
+- name: if.eonza
+  open: true
+  values:
+    elsevar: ""
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: '[]'
+      var: custbtns
+  children:
+  - name: source-code
+    values:
+      code: |-
+        obj vobj = JsonToObj(GetVar("custbtns"))
+        if *vobj > 0 : SetVar("mode", true)
+        arr out
+        for vitem in vobj {
+            out += `{"type": "7", "var": "btn", "text": "%{item(vitem,  "text").str()}", "options": "{\"initial\": \"%{item(vitem, "value").str()}\"}"}`
+        }
+        SetVar("buttons", `[%{Join(out, ",")}]`)
+- name: if.eonza
+  open: true
+  values:
+    elsevar: mode
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: info
+  children:
+  - name: set-variable
+    values:
+      name: buttons
+      value: |-
+        [{"type": "7", "var": "btn", "text": "#.ok#", "options": "{\"default\": \"true\", \"initial\": \"ok\"}"}
+        ]
+- name: if.eonza
+  open: true
+  values:
+    elsevar: mode
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: quest
+  children:
+  - name: set-variable
+    values:
+      name: buttons
+      value: |-
+        [{"type": "7", "var": "btn", "text": "#.yes#", "options": "{\"default\": \"true\", \"initial\": \"yes\"}"},
+        {"type": "7", "var": "btn", "text": "#.no#", "options": "{\"initial\": \"no\"}"}
+        ]
+- name: if.eonza
+  open: true
+  values:
+    elsevar: mode
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: warn
+  children:
+  - name: set-variable
+    values:
+      name: buttons
+      value: |-
+        [{"type": "7", "var": "btn", "text": "#.ok#", "options": "{\"default\": \"true\", \"initial\": \"ok\"}"},
+        {"type": "7", "var": "btn", "text": "#.cancel#", "options": "{\"initial\": \"cancel\"}"}
+        ]
+- name: if.eonza
+  open: true
+  values:
+    elsevar: mode
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: err
+  children:
+  - name: set-variable
+    values:
+      name: buttons
+      value: |-
+        [{"type": "7", "var": "btn", "text": "#.retry#", "options": "{ \"initial\": \"retry\"}"},
+        {"type": "7", "var": "btn", "text": "#.abort#", "options": "{\"initial\": \"abort\"}"},
+        {"type": "7", "var": "btn", "text": "#.ignore#", "options": "{\"initial\": \"ignore\"}"}
+        ]
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: msgvar
+    - options: ""
+      text: ""
+      type: "8"
+      var: buttons
+- name: if.eonza
+  open: true
+  values:
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: retbtn
+  children:
+  - name: source-code
+    values:
+      code: ResultVar( GetVar("retbtn"), Macro("#btn#"))
+langs:
+  en:
+    _custombtns: Custom Buttons
+    _desc: Show message
+    _name: Message
+  ru:
+    _custombtns: Настраиваемые кнопки
+    _desc: Показать сообщение
+    _name: Сообщение

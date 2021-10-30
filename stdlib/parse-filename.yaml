@@ -1,0 +1,37 @@
+settings:
+  name: parse-filename
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: parse-filename
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Get directory, filename and extension
+    _name: Parse Filename
+  ru:
+    _desc: Получить директорию, имя файла и расширение
+    _name: Разобрать имя файла
+code: |
+  map ret
+  str dir = ret["dir"] = Dir(filename)
+  if dir == "." : ret["dir"] = ""
+  str fileonly = ret["filename"] = BaseName(filename)
+  str ext = ret["ext"] = Ext(filename)
+  if *ext? : fileonly = Left(fileonly, *fileonly - *ext - 1)
+  ret["fileonly"] = fileonly
+  SetVar(varname, obj(ret))
+  SetVar(varname, filename)

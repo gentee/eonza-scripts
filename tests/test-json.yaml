@@ -1,0 +1,181 @@
+settings:
+  name: test-json
+  title: Test JSON & Regex
+  path: '#.tests#'
+  loglevel: 6
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: qqq#.n#second#.t#essese#.s#dedeuhiuhiu
+      var: out
+    - value: This qwer is a very long text.
+      var: original
+    - value: text
+      var: txt
+    - value: There are my@eonza.org and my@eonza.com
+      var: eonza
+    - value: There are my@eonza.org and your@eonza.com
+      var: emails
+- name: source-code
+  values:
+    _desc: RegEx & Replace
+    code: '%body%'
+  children:
+  - name: regex-replace
+    values:
+      regex: (\w+)@(\w+)\.(\w+)
+      repval: '[${1}-x@${2}.net]'
+      resultvar: xret
+      varname: emails
+  - name: regex-find
+    values:
+      all: false
+      regex: (\w+)@(\w+)\.(\w+)
+      resultvar: retfirst
+      varname: eonza
+  - name: regex-find
+    values:
+      all: true
+      regex: (\w+)@(\w+)\.(\w+)
+      resultvar: ret
+      varname: eonza
+  - name: assertions
+    values:
+      errmsg: Find regexp
+      list:
+      - cmp: equal
+        not: false
+        value: my@eonza.org
+        var: retfirst[0]
+      - cmp: equal
+        not: false
+        value: my
+        var: '#retfirst[1]#'
+      - cmp: equal
+        not: false
+        value: eonza
+        var: '#retfirst[2]#'
+      - cmp: equal
+        not: false
+        value: org
+        var: '#retfirst[3]#'
+      - cmp: equal
+        not: false
+        value: org
+        var: ret[0][3]
+      - cmp: equal
+        not: false
+        value: com
+        var: '#ret[1][3]#'
+  - name: replace
+    values:
+      list:
+      - new: first
+        old: 1st
+      - new: John
+        old: Alex
+      varname: input
+  - name: replace
+    values:
+      list:
+      - new: '[#txt#]'
+        old: '#txt#'
+      - new: P
+        old: e
+      resultvar: rep
+      subst: true
+      varname: original
+  - name: split-text
+    values:
+      delim: '#.n#'
+      text: |-
+        This
+        is
+        a test
+        message
+      varname: list
+  - name: join-text
+    values:
+      delim: ','
+      resultvar: out
+      varname: list
+  - name: assertions
+    values:
+      errmsg: Replace
+      list:
+      - cmp: equal
+        not: false
+        value: This qwPr is a vPry long [tPxt].
+        var: rep
+      - cmp: equal
+        not: false
+        value: a test
+        var: '#list[2]#'
+      - cmp: equal
+        not: false
+        value: This,is,a test,message
+        var: out
+- name: parse-json
+  values:
+    resultvar: myobj
+    value: |-
+      {   "root": "/home/user",
+          "index": 0,
+          "files": [{
+                  "file": "myfile.txt",
+                  "size": 2543
+              },{
+                  "file": "test.txt",
+                  "size": 257
+              }]
+      }
+- name: assertions
+  values:
+    errmsg: JSON parsing
+    list:
+    - cmp: equal
+      not: false
+      value: /home/user
+      var: myobj.root
+    - cmp: equal
+      not: false
+      value: myfile.txt
+      var: '#myobj.files[#myobj.index#].file#'
+    - cmp: equal
+      not: false
+      value: "257"
+      var: myobj[files][1].size
+- name: parse-yaml
+  values:
+    resultvar: yamlret
+    value: |-
+      root: "/home/user/тест"
+      index: 0
+      files:
+         - file: myfile.#txt#
+           size: 2543
+         - file: test.txt
+           size: 257.35
+      ooops:
+           reload: true
+- name: assertions
+  values:
+    errmsg: YAML parsing
+    list:
+    - cmp: equal
+      not: false
+      value: /home/user/тест
+      var: yamlret.root
+    - cmp: equal
+      not: false
+      value: myfile.text
+      var: '#yamlret.files[#yamlret.index#].file#'
+    - cmp: equal
+      not: false
+      value: "257.35"
+      var: yamlret[files][1].size
+    - cmp: equal
+      not: false
+      value: "true"
+      var: yamlret.ooops.reload

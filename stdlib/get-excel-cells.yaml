@@ -1,0 +1,53 @@
+settings:
+  name: get-excel-cells
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: get-excel-cells
+  helplang: ru
+params:
+- name: xlsxfile
+  title: '#_excelfile#'
+  type: 2
+  options:
+    required: true
+- name: list
+  title: '#_cells#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: sheet
+      title: '#_sheet#'
+      type: 2
+    - name: cell
+      title: '#_cell#'
+      type: 2
+    - name: var
+      title: '#.varname#'
+      type: 2
+langs:
+  en:
+    _cell: Cell
+    _cells: Cells
+    _desc: Get Excel cell values
+    _excelfile: Excel Filename (*.xlsx)
+    _name: Get Excel Cells
+    _sheet: Sheet
+  ru:
+    _cell: Ячейка
+    _cells: Ячейки
+    _desc: Получить значения ячеек Excel
+    _excelfile: Excel файл (*.xlsx)
+    _name: Получить ячейки Excel
+    _sheet: Лист
+code: |
+  handle hxlsx = OpenXLSX(xlsxfile)
+  obj vobj = JsonToObj(list)
+  for vitem in vobj {
+      str sheet = item(vitem, "sheet").str()
+      if !*sheet? : sheet = XlsxSheetName(hxlsx, 0)
+       SetVar( item(vitem, "var").str(),  XlsxGetCell(hxlsx, sheet, item(vitem, "cell").str()))
+  }

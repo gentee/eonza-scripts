@@ -1,0 +1,23 @@
+settings:
+  name: create-dir
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  loglevel: 4
+  unrun: true
+  help: create-dir
+  helplang: ru  
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Create the directory
+    _name: Create Directory
+  ru:
+    _desc: Создать директорию
+    _name: Создать директорию
+code: CreateDir(path)

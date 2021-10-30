@@ -1,0 +1,25 @@
+settings:
+  name: sql-close
+  title: '#_name#'
+  path: '#.stdlib#/#.database#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: sql-close
+  helplang: ru
+params:
+- name: sqlcon
+  title: '#.sqlcon#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Close SQL connection
+    _name: SQL Close
+  ru:
+    _desc: Закрыть SQL соединение
+    _name: Закрыть SQL
+code: |+
+  SQLClose(sqlcon)
+

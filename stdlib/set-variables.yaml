@@ -1,0 +1,33 @@
+settings:
+  name: set-variables
+  title: '#_setvars#'
+  desc: '#_desc#'  
+  path: "#.stdlib#/#.variables#"  
+  help: set-variables
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: list
+  title: '#_vars#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: var
+      title: '#.varname#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 1
+langs:
+  en:
+    _desc: Assign values to several variables
+    _setvars: Set Variables
+    _vars: Variables
+  ru:
+    _desc: Присвоить значения нескольким переменным
+    _setvars: Установить переменные
+    _vars: Переменные
+code: "obj vobj = JsonToObj(list) \nfor vitem in vobj {\n    SetVar(item(vitem,
+  \"var\").str(), item(vitem, \"value\").str())\n}\n"

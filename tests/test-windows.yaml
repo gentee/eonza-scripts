@@ -1,0 +1,225 @@
+settings:
+  name: test-windows
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+tree:
+- name: write-console
+  values:
+    text: Test Windows scripts
+- name: source-code
+  open: true
+  values:
+    _desc: Testing Registry
+    code: '%body%'
+  children:
+  - name: set-variables
+    values:
+      list:
+      - value: Software\Eonza-Test
+        var: subkey
+      - value: This is a string
+        var: sval
+      - value: Тест
+        var: rval
+      - value: '#subkey#\Test'
+        var: subkeytest
+  - name: set-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkeytest#'
+      values:
+      - val: String Value
+        value: '#sval#'
+        vtype: "1"
+      - val: RegVal
+        value: '#rval#'
+        vtype: "1"
+      - val: Num
+        value: "12345"
+        vtype: "4"
+      - val: ""
+        value: DEFAULT
+        vtype: "1"
+  - name: set-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#\Test Ext'
+      values:
+      - val: Test Value
+        value: '#sval#+#sval#'
+        vtype: "1"
+      - val: RegNum
+        value: "22"
+        vtype: "4"
+      - val: Num
+        value: "6789"
+        vtype: "4"
+  - name: set-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkeytest#'
+      values:
+      - val: Num
+        value: "54321"
+        vtype: "4"
+  - name: foreach-registry-subkey
+    open: true
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#'
+      varname: sk
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#sk#='
+        name: subout
+        subst: "0"
+    - name: foreach-registry-value
+      open: true
+      values:
+        access: "0"
+        root: "1"
+        subkey: '#subkey#\#sk#'
+        varname: vname
+      children:
+      - name: set-variable
+        values:
+          list:
+          - func: append
+            param: +#vname#
+          name: valout
+          subst: "0"
+          value: ""
+  - name: get-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkeytest#'
+      values:
+      - def: ""
+        value: String Value
+        var: sv1
+      - def: OOOPS
+        value: RegVal
+        var: rv
+      - def: ""
+        value: Num
+        var: inum
+        vtype: "1"
+      - def: unknown
+        value: Sub
+        var: def
+      - def: ""
+        value: ""
+        var: defout
+        vtype: "1"
+  - name: delete-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#\Test Ext'
+      values:
+      - value: RegNum
+      - value: Num
+  - name: foreach-registry-value
+    open: true
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#\Test Ext'
+      varname: temp
+    children:
+    - name: set-variable
+      values:
+        list:
+        - func: append
+          param: '#temp#'
+        name: extout
+        subst: "0"
+        value: ""
+  - name: set-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#'
+      values:
+      - val: ""
+        value: Eonza Root
+        vtype: "1"
+  - name: delete-registry-key
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#\Test Ext'
+  - name: delete-registry-key
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#\Test'
+  - name: get-registry-value
+    values:
+      access: "0"
+      root: "1"
+      subkey: '#subkey#'
+      values:
+      - def: No Eonza root
+        value: ""
+        var: eroot
+  - name: write-console
+    values:
+      text: |
+        Windows Registry scripts have been tested
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: Test=Test Ext=
+      var: subout
+    - cmp: equal
+      not: false
+      value: +String Value+RegVal+Num++Test Value+RegNum+Num
+      var: valout
+    - cmp: equal
+      not: false
+      value: unknown
+      var: def
+    - cmp: equal
+      not: false
+      value: '#sval#'
+      var: sv1
+    - cmp: equal
+      not: false
+      value: '#rval#'
+      var: rv
+    - cmp: equal
+      not: false
+      value: "54321"
+      var: inum
+    - cmp: equal
+      not: false
+      value: Test Value
+      var: extout
+    - cmp: equal
+      not: false
+      value: DEFAULT
+      var: defout
+    - cmp: equal
+      not: false
+      value: Eonza Root
+      var: eroot
+langs:
+  en:
+    _desc: Test scripts for Windows
+    _name: Test - Windows
+  ru:
+    _desc: Тестирование скриптов для Windows
+    _name: Тест - Windows

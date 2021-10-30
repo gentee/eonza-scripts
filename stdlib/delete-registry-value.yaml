@@ -1,0 +1,56 @@
+settings:
+  name: delete-registry-value
+  title: '#_name#'
+  path: '#.stdlib#/Windows/#.registry#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: delete-registry-value
+  helplang: ru
+params:
+- name: root
+  title: '#.rootkey#'
+  type: 3
+  options:
+    initial: "1"
+    flags: default.regkeys
+    type: int
+- name: subkey
+  title: '#.subkey#'
+  type: 2
+  options:
+    required: true
+- name: values
+  title: '#_values#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: value
+      title: '#.valname#'
+      type: 2
+- name: access
+  title: '#.access#'
+  type: 3
+  options:
+    initial: "0"
+    flags: default.regaccess
+    type: int
+langs:
+  en:
+    _desc: Delete Registry value
+    _name: Delete Registry Value
+    _values: Values for deleting
+  ru:
+    _desc: Удалить значение Реестра
+    _name: Удалить значение Реестра
+    _values: Значения для удаления
+code: |+
+  obj vobj = JsonToObj(values)
+  handle key = OpenRegistryKey(root, subkey, 0xf003f | access)
+  for vitem in vobj {
+       DeleteRegistryValue(key, item(vitem, "value").str())
+  }
+  CloseRegistryKey(key)
+
+

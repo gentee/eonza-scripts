@@ -1,0 +1,38 @@
+settings:
+  name: write-file
+  title: '#_writefile#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: write-file
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: name
+  title: '#.varname#'
+  type: 2
+- name: text
+  title: '#.text#'
+  type: 1
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: append
+  title: '#_append#'
+  type: 0
+langs:
+  en:
+    _append: Append Data
+    _desc: Write a variable to a file
+    _writefile: Write To File
+  ru:
+    _append: Добавить данные
+    _desc: Записать переменную в файл
+    _writefile: Записать в файл
+code: |-
+  str out = ?( *name?, GetVar(name), "")
+  if *text? : out += text
+  if append : AppendFile(filename, out)
+  else : WriteFile(filename, out)

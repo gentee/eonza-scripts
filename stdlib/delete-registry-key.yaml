@@ -1,0 +1,38 @@
+settings:
+  name: delete-registry-key
+  title: '#_name#'
+  path: '#.stdlib#/Windows/#.registry#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: delete-registry-key
+  helplang: ru
+params:
+- name: root
+  title: '#.rootkey#'
+  type: 3
+  options:
+    initial: "1"
+    flags: default.regkeys
+    type: int
+- name: subkey
+  title: '#.subkey#'
+  type: 2
+  options:
+    required: true
+- name: access
+  title: '#.access#'
+  type: 3
+  options:
+    initial: "0"
+    flags: default.regaccess
+    type: int
+langs:
+  en:
+    _desc: Delete Registry key with all subkeys
+    _name: Delete Registry Key
+  ru:
+    _desc: Удалить ключ Реестра со всеми подключами
+    _name: Удалить ключ Реестра
+code: |
+  DeleteRegistryKey(root, subkey, access)

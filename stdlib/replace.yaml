@@ -1,0 +1,46 @@
+settings:
+  name: replace
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.text#"    
+  loglevel: 6
+  unrun: true
+  help: replace
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: subst
+  title: '#.substvar#'
+  type: 0
+- name: list
+  title: '#_list#'
+  type: 5
+  options:
+    list:
+    - name: old
+      title: '#_whatfind#'
+      type: 2
+    - name: new
+      title: '#_replace#'
+      type: 2
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+langs:
+  en:
+    _desc: Replace strings in text
+    _list: What to find and replace
+    _name: Replace
+    _replace: Replace with
+    _whatfind: What to find
+  ru:
+    _desc: Заменить строки в тексте
+    _list: Что найти и заменить
+    _name: Заменить
+    _replace: Заменить на
+    _whatfind: Что найти
+code: "obj vobj = JsonToObj(list) \nstr val = GetVar(varname)\nif subst {\n    val = Macro(val)\n}\nfor vitem in vobj {\n    str sold = item(vitem, \"old\").str()\n    str snew = item(vitem, \"new\").str()\n    if subst {\n         sold = Macro(sold)\n         snew = Macro(snew)\n    } \n    val = Replace(val, sold, snew)\n}\nSetVar( ?(*resultvar?, resultvar, varname), val)\n"

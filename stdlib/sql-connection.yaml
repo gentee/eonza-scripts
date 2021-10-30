@@ -1,0 +1,68 @@
+settings:
+  name: sql-connection
+  title: '#_name#'
+  path: '#.stdlib#/#.database#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: sql-connection
+  helplang: ru
+params:
+- name: sqlserver
+  title: '#_sqlserver#'
+  type: 3
+  options:
+    initial: mysql
+    items:
+    - title: MySQL
+      value: mysql
+    - title: PostgreSQL
+      value: pg
+- name: host
+  title: '#.host#'
+  type: 2
+  options:
+    initial: localhost
+    required: true
+- name: port
+  title: '#.portlng#'
+  type: 2
+- name: username
+  title: '#.username#'
+  type: 2
+  options:
+    required: true
+- name: password
+  title: '#.password#'
+  type: 2
+  options:
+    required: true
+- name: dbname
+  title: '#_dbname#'
+  type: 2
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _dbname: Database Name
+    _desc: Connect to SQL database
+    _name: SQL Connection
+    _sqlserver: SQL Server
+  ru:
+    _dbname: Имя базы данных
+    _desc: Соединение с SQL базой
+    _name: SQL соединение
+    _sqlserver: SQL сервер
+code: |+
+  map  pars
+  pars["sqlserver"] = sqlserver
+  pars["host"] = host
+  pars["port"] = port
+  pars["username"] = username
+  pars["password"] = password
+  pars["dbname"] = dbname
+  SQLConnection(pars, resultvar)
+

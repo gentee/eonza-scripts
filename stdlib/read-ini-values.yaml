@@ -1,0 +1,52 @@
+settings:
+  name: read-ini-values
+  title: '#_name#'
+  path: '#.stdlib#/#.dataparsing#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: read-ini-values
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: section
+  title: '#_section#'
+  type: 2
+- name: list
+  title: '#_keys#'
+  type: 5
+  options:
+    list:
+    - name: key
+      title: '#_key#'
+      type: 2
+      options:
+        required: true
+    - name: var
+      title: '#.varname#'
+      type: 2
+      options:
+        required: true
+    - name: def
+      title: '#.defvalue#'
+      type: 2
+langs:
+  en:
+    _desc: Read INI file values
+    _key: Key Name
+    _keys: Keys
+    _name: Read INI Values
+    _section: Section
+  ru:
+    _desc: Получить значения из INI файла
+    _key: Имя ключа
+    _keys: Ключи
+    _name: Получить INI значения
+    _section: Секция
+code: "buf inifile \nhandle cfg = LoadIni(ReadFile(filename, inifile))\nfor keys in
+  JsonToObj(list)  {\n       GetIniValue(cfg, section, item(keys, \"key\").str(),
+  item(keys, \"var\").str(), item(keys, \"def\").str())\n}\n"

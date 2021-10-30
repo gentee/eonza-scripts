@@ -1,0 +1,39 @@
+settings:
+  name: for.eonza
+  title: '#_for#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.programming#"
+  help: for-statement
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: initial
+  title: '#_initial#'
+  type: 2
+- name: final
+  title: '#_final#'
+  type: 2
+- name: index
+  title: '#_indexvar#'
+  type: 2
+  options:
+    default: index
+langs:
+  en:
+    _desc: Iteration loop
+    _final: Final value
+    _for: For Statement
+    _indexvar: Index Variable
+    _initial: Initial Value
+  ru:
+    _desc: Цикл по диапазону
+    _final: Конечное значение
+    _for: Цикл For
+    _indexvar: Переменная индекса
+    _initial: Начальное значение
+code: |-
+  for i in int(initial)..int(final) {
+       SetVar(index, i)
+       %body%
+  }

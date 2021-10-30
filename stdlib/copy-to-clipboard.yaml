@@ -1,0 +1,23 @@
+settings:
+  name: copy-to-clipboard
+  title: '#_name#'
+  path: '#.stdlib#/#.text#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: copy-to-clipboard
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+langs:
+  en:
+    _desc: |
+      Copy text to clipboard
+    _name: Copy To Clipboard
+  ru:
+    _desc: Копировать текст в буфер обмена
+    _name: Копировать в буфер обмена
+code: |
+  CopyClipboard(text)

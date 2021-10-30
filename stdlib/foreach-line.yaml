@@ -1,0 +1,34 @@
+settings:
+  name: foreach-line
+  title: '#_name#'
+  path: '#.stdlib#/#.text#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: foreach-line
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: |
+      Run commands for each line of the text
+    _name: Foreach Line
+  ru:
+    _desc: Запустить команды для каждой строки в тексте
+    _name: Для каждой строки
+code: |
+  arr list = Split(text, "\n")
+  for item in list {
+       SetVar(varname, TrimSpace(item))
+       %body%
+  }

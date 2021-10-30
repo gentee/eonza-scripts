@@ -1,0 +1,85 @@
+settings:
+  name: test-email
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: |-
+        Hello,
+        This is a plain text.
+      var: plain
+    - type: "2"
+      value: <h2>Test Send Email commands</h2>
+      var: notice
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: notice
+    - options: '{"required": true}'
+      text: your.username@gmail.com
+      type: "2"
+      var: username
+    - options: '{"required": true}'
+      text: '#.password#'
+      type: "9"
+      var: password
+    - options: '{"required": true}'
+      text: To (email only)
+      type: "2"
+      var: emailto
+    - options: '{"initial": "skip", "flags": "skip"}'
+      text: Skip
+      type: "7"
+      var: ebtn
+    - options: '{"initial": "continue", "default":"true"}'
+      text: Continue
+      type: "7"
+      var: ebtn
+- name: return.eonza
+  values:
+    _ifcond: GetVar("ebtn") == "skip"
+- name: smtp-server
+  values:
+    consec: ssl
+    host: smtp.gmail.com
+    password: '#password#'
+    port: "465"
+    resultvar: smtpgmail
+    username: '#username#'
+- name: send-email
+  values:
+    body: '#plain#'
+    from: ""
+    smtpserver: smtpgmail
+    subject: Тестовое письмо
+    to: '#emailto#'
+- name: sleep.eonza
+  values:
+    timeout: "5000"
+- name: send-email
+  values:
+    body: |-
+      <html><body><b>Hi,</b><br>
+      <p>This is HTML text.</p>
+      Best regards,<br>
+      #username#
+      </body>
+      </html>
+    from: John Doe <#username#>
+    smtpserver: smtpgmail
+    subject: Test message
+    to: Test User <#emailto#>
+langs:
+  en:
+    _desc: Test email scripts
+    _name: Test Email
+  ru:
+    _desc: Тестирование email скриптов
+    _name: Тест Email

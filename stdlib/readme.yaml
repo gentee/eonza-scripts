@@ -1,0 +1,53 @@
+settings:
+  name: readme
+  title: '#_name#'
+  path: '#.stdlib#/#.forms#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: readme
+  helplang: ru
+  unrun: true
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+  options:
+    flags: preview
+- name: hidden
+  title: '#.skip#'
+  type: 0
+tree:
+- name: return.eonza
+  values:
+    _ifcond: hidden
+- name: source-code
+  open: true
+  values:
+    code: |
+      str text = TrimSpace(GetVar("text"))
+      if text[0] != '<' {
+             if HasPrefix(text, "# ") || HasPrefix(text, "## ") || HasPrefix(text, "### ") {
+                 SetVar("md", text)
+                 %body%
+             } else {
+                 SetVar("md", "<pre>" + text + "</pre>")
+             }
+      } else :  SetVar("md",  text)
+  children:
+  - name: markdown-to-html
+    values:
+      varname: md
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: md
+langs:
+  en:
+    _desc: Show HTML, Markdown or preformatted text
+    _name: Readme
+  ru:
+    _desc: Показать HTML, Markdown или предварительно отформатированный текст
+    _name: Прочти меня

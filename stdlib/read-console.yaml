@@ -1,0 +1,25 @@
+settings:
+  name: read-console
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.logconsole#"    
+  help: read-console
+  helplang: ru
+  loglevel: 6
+params:
+- name: text
+  title: '#.text#'
+  type: 2
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Read console input
+    _name: Read Console
+  ru:
+    _desc: Прочитать консольный ввод
+    _name: Прочитать из консоли
+code: SetVar(varname, ReadString( text + " "))

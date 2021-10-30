@@ -1,0 +1,39 @@
+settings:
+  name: sql-exec
+  title: '#_name#'
+  path: '#.stdlib#/#.database#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: sql-exec
+  helplang: ru
+  unrun: true
+params:
+- name: sqlcon
+  title: '#.sqlcon#'
+  type: 2
+  options:
+    required: true
+- name: sqlcmd
+  title: '#_sqlstate#'
+  type: 1
+  options:
+    required: true
+- name: pars
+  title: '#.parameters#'
+  type: 5
+  options:
+    list:
+    - name: par
+      title: '#.value#'
+      type: 2
+langs:
+  en:
+    _desc: Execute SQL commands
+    _name: SQL Exec
+    _sqlstate: SQL Statements
+  ru:
+    _desc: Выполнить SQL команды
+    _name: Выполнить SQL
+    _sqlstate: SQL команды
+code: "arr list\nobj vobj = JsonToObj(pars) \nfor vitem in vobj {\n    list += Macro(item(vitem,
+  \"par\").str())\n}\nSQLExec(sqlcon, sqlcmd, list)"

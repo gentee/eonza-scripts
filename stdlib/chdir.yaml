@@ -1,0 +1,23 @@
+settings:
+  name: chdir
+  title: '#_setcurdir#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: chdir
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Change the current duirectory
+    _setcurdir: Set Current Dir
+  ru:
+    _desc: Изменить текущую директорию
+    _setcurdir: Установить текущую директорию
+code: ChDir(path)

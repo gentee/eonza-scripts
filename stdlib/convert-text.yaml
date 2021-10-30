@@ -1,0 +1,45 @@
+settings:
+  name: convert-text
+  title: '#_name#'
+  path: '#.stdlib#/#.text#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: convert-text
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: src
+  title: '#_src#'
+  type: 3
+  options:
+    initial: utf-8
+    flags: "default.charmaps"
+- name: dest
+  title: '#_dest#'
+  type: 3
+  options:
+    initial: utf-8
+    flags: "default.charmaps"
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+langs:
+  en:
+    _desc: Convert text between different encodings
+    _dest: Target Encoding
+    _name: Convert Text
+    _src: Source Encoding
+  ru:
+    _desc: Конвертировать текст между различными кодировками
+    _dest: Целевая кодировка
+    _name: Конвертировать текст
+    _src: Исходная кодировка
+code: |-
+  str ret = ConvertText(?(src == `utf-8`, GetVar(varname), GetVarBytes(varname)), src, dest)
+  if *resultvar > 0 : SetVar(resultvar, ret)
+  else : SetVar(varname, ret)

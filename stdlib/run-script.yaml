@@ -1,0 +1,32 @@
+settings:
+  name: run-script
+  title: '#_name#'
+  path: '#.stdlib#/#.applications#'
+  desc: '#_desc#'
+  loglevel: 4
+  help: run-script
+  helplang: ru
+params:
+- name: script
+  title: '#.script#'
+  type: 2
+  options:
+    required: true
+- name: data
+  title: '#_data#'
+  type: 1
+- name: silent
+  title: '#.runsilently#'
+  type: 0  
+  options:
+    initial: "true"
+langs:
+  en:
+    _data: Attached Data
+    _desc: Run script  as a process
+    _name: Run Script
+  ru:
+    _data: Прикреплённые данные
+    _desc: Запустить скрипт как процесс
+    _name: Запустить скрипт
+code: RunScript(script, data, silent)

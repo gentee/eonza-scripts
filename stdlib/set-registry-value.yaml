@@ -1,0 +1,65 @@
+settings:
+  name: set-registry-value
+  title: '#_name#'
+  path: '#.stdlib#/Windows/#.registry#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: set-registry-value
+  helplang: ru
+params:
+- name: root
+  title: '#.rootkey#'
+  type: 3
+  options:
+    initial: "1"
+    flags: default.regkeys
+    type: int
+- name: subkey
+  title: '#.subkey#'
+  type: 2
+  options:
+    required: true
+- name: values
+  title: '#_values#'
+  type: 5
+  options:
+    required: true
+    list:
+    - name: val
+      title: '#.valname#'
+      type: 2
+    - name: vtype
+      title: '#.type#'
+      type: 3
+      options:
+        initial: "1"
+        flags: default.regtype
+    - name: value
+      title: '#.value#'
+      type: 2
+- name: access
+  title: '#.access#'
+  type: 3
+  options:
+    initial: "0"
+    flags: default.regaccess
+    type: int
+langs:
+  en:
+    _desc: Set Registry values
+    _name: Set Registry Value
+    _values: Values
+  ru:
+    _desc: Установить значения в Реестре
+    _name: Установить значение Реестра
+    _values: Значения
+code: |+
+  obj vobj = JsonToObj(values)
+  handle key = CreateRegistryKey(root, subkey, access)
+  for vitem in vobj {
+      SetRegistryValue(key, item(vitem, "val").str(), item(vitem, "vtype").int(), Macro(item(vitem, "value").str()))
+  }
+  CloseRegistryKey(key)
+
+

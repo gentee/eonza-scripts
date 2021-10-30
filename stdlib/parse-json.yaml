@@ -1,0 +1,30 @@
+settings:
+  name: parse-json
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.dataparsing#"  
+  loglevel: 6
+  help: parse-json
+  helplang: ru
+  unrun: true
+params:
+- name: value
+  title: '#_jsondata#'
+  type: 1
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Parse json to a variable
+    _jsondata: JSON Data
+    _name: Parse JSON
+  ru:
+    _desc: Загрузить json в переменную
+    _jsondata: JSON данные
+    _name: Разобрать JSON
+code: SetVar(resultvar, JsonToObj(value))

@@ -1,0 +1,23 @@
+settings:
+  name: curdir
+  title: '#_getcurdir#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  help: curdir
+  helplang: ru
+  loglevel: 6
+  unrun: true
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Get the current directory
+    _getcurdir: Get Current Dir
+  ru:
+    _desc: Получить текущую директорию
+    _getcurdir: Получить текущую директорию
+code: SetVar(varname, GetCurDir())

@@ -1,0 +1,58 @@
+settings:
+  name: form
+  title: '#_form#'
+  loglevel: 6
+  desc: '#_desc#'
+  path: "#.stdlib#/#.forms#"      
+  help: form
+  helplang: ru
+  unrun: true
+params:
+- name: list
+  title: '#_formcontrols#'
+  type: 5
+  options:
+    list:
+    - name: type
+      title: '#_controltype#'
+      type: 3
+      options:
+        type: int
+        items:
+        - title: '#.singletext#'
+          value: "2"
+        - title: '#.checkbox#'
+          value: "0"
+        - title: '#.textarea#'
+          value: "1"
+        - title: '#.select#'
+          value: "3"
+        - title: '#.htmltext#'
+          value: "6"
+        - title: '#.button#'
+          value: "7"
+        - title: '#.dynamic#'
+          value: "8"
+        - title: '#.password#'
+          value: "9"
+    - name: text
+      title: '#.text#'
+      type: 2
+    - name: var
+      title: '#.varname#'
+      type: 2
+    - name: options
+      title: '#.additional#'
+      type: 1
+langs:
+  en:
+    _controltype: Control Type
+    _desc: Show form
+    _form: Form
+    _formcontrols: Form Controls
+  ru:
+    _controltype: Тип элемента
+    _desc: Показать форму
+    _form: Форма
+    _formcontrols: Элементы формы
+code: Form(list)

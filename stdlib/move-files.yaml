@@ -1,0 +1,132 @@
+settings:
+  name: move-files
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: move-files
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: destpath
+  title: '#.destpath#'
+  type: 2
+  options:
+    required: true
+- name: ifexist
+  title: '#.iffileexist#'
+  type: 3
+  options:
+    initial: overwrite
+    items:
+    - title: '#.overwrite#'
+      value: overwrite
+    - title: '#.overwritenew#'
+      value: overwritenew
+    - title: '#.skip#'
+      value: skip
+    - title: '#.ask#'
+      value: ask
+    - title: '#.asknew#'
+      value: asknew
+    - title: '#.savecopy#'
+      value: savecopy
+- name: recursive
+  title: '#.recursive#'
+  type: 0
+  options:
+    initial: "true"
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+tree:
+- name: set-variable
+  values:
+    list:
+    - func: abspath
+      param: ""
+    name: path
+- name: set-variable
+  values:
+    list:
+    - func: abspath
+      param: ""
+    name: destpath
+- name: file-list
+  values:
+    _advanced: |-
+      params:
+           recursive: "#recursive#"
+    ignore: '#ignore#'
+    path: '#path#'
+    pattern: '#pattern#'
+    recursive: false
+    resultvar: list
+- name: set-variable
+  values:
+    list:
+    - func: length
+      param: ""
+    name: count
+    value: list
+- name: source-code
+  open: true
+  values:
+    code: |2
+
+      obj iobj = GetVarObj("list")
+      int progress = ProgressStart(*iobj, 100, GetVar(`lng.movefiles`), ``)
+      int pathlen = *GetVar("path")
+      str dest = GetVar("destpath")
+      SetVar("mode", GetVar("ifexist"))
+      map.bool dirs
+      for item, index in arr(iobj) {
+              SetVar("index", index)
+              str src = JoinPath(item(item, "dir").str(), item(item, "name").str())
+              SetVar("filename", src)
+              str suffix = Substr(src, pathlen, *src - pathlen)
+              str dir = Dir(JoinPath( dest, suffix))
+              if !IsKey(dirs, dir) {
+                   if !ExistFile(dir) : CreateDir(dir)
+                   dirs[dir] = true
+              }
+              SetVar("dest", dir)
+              %body%
+               str mode = GetVar("mode")
+                if HasPrefix(mode,"ask") {
+                     obj action = GetVarObj("action")
+                     if item(action, "all").bool() {
+                          SetVar("mode", item(action, "btn").str())
+                     }
+                }
+               Progress(progress, 1)
+       }
+      ProgressEnd(progress)
+  children:
+  - name: move-file
+    values:
+      _advanced: |-
+        params:
+            ifexist: "#mode#"
+      _optional: |-
+        resultvar: action
+        hideapply: false
+      destpath: '#dest#'
+      ifexist: overwrite
+      path: '#filename#'
+langs:
+  en:
+    _desc: Move files to another directory
+    _name: Move Files
+    lng.movefiles: Moving files...
+  ru:
+    _desc: Переместить файлы в другую директорию
+    _name: Переместить файлы
+    lng.movefiles: Перемещение файлов...

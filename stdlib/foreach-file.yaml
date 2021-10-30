@@ -1,0 +1,42 @@
+settings:
+  name: foreach-file
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.files#"  
+  loglevel: 6
+  help: foreach-file
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+- name: recursive
+  title: '#.recursive#'
+  type: 0
+  options:
+    initial: "true"
+- name: onlyfiles
+  title: '#.searchfiles#'
+  type: 0
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+- name: varname
+  title: '#.varname#'
+  type: 2
+- name: onlydirs
+  title: '#.searchdirs#'
+  type: 0
+  options:
+    optional: true
+langs:
+  en:
+    _desc: Run commands for each file or directory
+    _name: Foreach File
+  ru:
+    _desc: Выполнить команды для каждого файла или директории
+    _name: Цикл для каждого файла
+code: "int flags\nif recursive {\n    flags |= RECURSIVE\n}\nif onlyfiles {\n    flags |= ONLYFILES\n}\nif onlydirs {\n    flags |= ONLYDIRS\n}\narr patterns exclude\nif *pattern? {\n    patterns = Split(pattern, `,`)\n}\nif *ignore? {\n    exclude  = Split(ignore, `,`)\n}\narr.finfo list = ReadDir(path, flags, patterns, exclude)\nfor item in list {\n    if *varname? { \n         SetVar(varname, item.Name)\n         SetVar(varname, obj(item))\n      /*SetVar(varname+\".size\", item.Size)\n         SetVar(varname+\".isdir\", item.IsDir)\n         SetVar(varname+\".dir\", item.Dir)*/\n    }\n    %body%\n}"

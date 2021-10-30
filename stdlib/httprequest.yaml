@@ -1,0 +1,73 @@
+settings:
+  name: httprequest
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.network#"    
+  loglevel: 6
+  unrun: true
+  help: httprequest
+  helplang: ru
+params:
+- name: url
+  title: '#.url#'
+  type: 2
+  options:
+    required: true
+- name: method
+  title: '#_method#'
+  type: 3
+  options:
+    initial: GET
+    items:
+    - title: GET
+    - title: POST
+    - title: UPDATE
+    - title: PATCH
+    - title: HEAD
+    - title: PUT
+    - title: DELETE
+- name: pars
+  title: '#.parameters#'
+  type: 5
+  options:
+    list:
+    - name: name
+      title: '#.name#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 1
+- name: varname
+  title: '#.varname#'
+  type: 2
+- name: headers
+  title: '#_headers#'
+  type: 5
+  options:
+    list:
+    - name: name
+      title: '#.name#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 2
+langs:
+  en:
+    _desc: Send an HTTP request
+    _headers: Headers
+    _method: Method
+    _name: HTTP Request
+  ru:
+    _desc: Послать HTTP запрос
+    _headers: Заголовки
+    _method: Метод
+    _name: HTTP запрос
+code: |-
+  map params heads
+  for vitem in JsonToObj(pars)  {
+        params[item(vitem,"name").str()] = Macro(item(vitem,"value").str())
+  }
+  for vitem in JsonToObj(headers)  {
+        heads[item(vitem,"name").str()] = Macro(item(vitem,"value").str())
+  }
+  SetVar(varname, HTTPRequest(url, method, params, heads))

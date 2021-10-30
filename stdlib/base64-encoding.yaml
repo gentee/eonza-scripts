@@ -1,0 +1,49 @@
+settings:
+  name: base64-encoding
+  title: '#_name#'
+  path: '#.stdlib#/#.encoding#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: base64-encoding
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: encoding
+  title: '#_encoding#'
+  type: 3
+  options:
+    initial: "0"
+    type: int
+    items:
+    - title: '#_tobase64#'
+      value: "0"
+    - title: '#_frombase64#'
+      value: "1"
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+langs:
+  en:
+    _desc: Base64 encoding and decoding
+    _encoding: Encoding
+    _frombase64: Base64 => UTF-8
+    _name: Base64 Encoding
+    _tobase64: UTF-8 => Base64
+  ru:
+    _desc: Base64 кодирование и декодирование
+    _encoding: Конвертация
+    _frombase64: Base64 => UTF-8
+    _name: Base64 кодирование
+    _tobase64: UTF-8 => Base64
+code: |
+  str src = GetVar(varname)
+  str tmp
+  if encoding? :  tmp = str(UnBase64(src))
+  else : tmp = Base64(buf(src))
+  if *resultvar == 0 : resultvar = varname
+  SetVar(resultvar, tmp)

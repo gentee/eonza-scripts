@@ -1,0 +1,52 @@
+settings:
+  name: decrypt-file
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.cryptography#"  
+  loglevel: 4
+  help: decrypt-file
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: password
+  title: '#.password#'
+  type: 2
+  options:
+    required: true
+- name: destpath
+  title: '#.destpath#'
+  type: 2
+- name: decfile
+  title: '#.outputfile#'
+  type: 2
+tree:
+- name: crypto-funcs
+- name: source-code
+  values:
+    code: "str psw = GetVar(\"password\")\nstr fname = AbsPath(GetVar(\"filename\"))\nstr
+      path = GetVar(\"destpath\")\nif *path == 0 {\n      path = Dir(fname)\n}\nfile
+      fin = OpenFile(fname, READONLY)\nbuf bin = Read(fin, 512)\nECHeader head \nint
+      headSize = DecodeInt(bin, 0)\nStructDecode(Subbuf(bin, 8, headSize), head)\nstr
+      outfile = GetVar(\"decfile\")\nif *outfile == 0 {\n     outfile = head.Filename\n}\npath
+      = JoinPath(path, outfile)\nif fname == path : error(102, \"Decrypt File:  Source
+      file equals the output file\")\nfile fout = OpenFile(path, CREATE | TRUNC)\nint
+      size\nSetPos(fin, 8 + headSize, 0)\nint progress = ProgressStart(head.Size,
+      50, Format( GetVar(\"lng.decrypt\"),fname, path), ``)\nwhile size < head.Size
+      {\n     buf bsize = Read(fin,8)\n     buf out &= Read(fin, DecodeInt(bsize,0))\n
+      \    out &= AESDecrypt(psw, out)\n     Write(fout, out)\n     Progress(progress,
+      *out)\n     size += *out\n}\nif size != head.Size {\n    error(200, `Incorrect
+      decrypting of  %{path}: %{size} != %{head.Size}`)\n}\nProgressEnd(progress)\nCloseFile(fout)\nSetFileTime(path,
+      time(head.Time))\nCloseFile(fin)"
+langs:
+  en:
+    _desc: Decrypt the file
+    _name: Decrypt File
+    lng.decrypt: Decrypting %s to %s
+  ru:
+    _desc: Расшифровать файл
+    _name: Расшифровать файл
+    lng.decrypt: Расшифровывание %s в %s

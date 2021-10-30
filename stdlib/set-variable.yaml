@@ -1,0 +1,118 @@
+settings:
+  name: set-variable
+  title: '#_setvar#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.variables#"  
+  loglevel: 6
+  unrun: true
+  help: set-variable
+  helplang: ru
+params:
+- name: name
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+    flags: nomacro
+- name: value
+  title: '#.value#'
+  type: 1
+  options:
+    flags: nomacro
+- name: subst
+  title: '#_subst#'
+  type: 3
+  options:
+    initial: "1"
+    default: "1"
+    type: int
+    items:
+    - title: '#.no#'
+      value: "0"
+    - title: '#_everywhere#'
+      value: "3"
+    - title: '#_onlyvalue#'
+      value: "1"
+    - title: '#_onlyvar#'
+      value: "2"
+- name: list
+  title: '#.functions#'
+  type: 5
+  options:
+    list:
+    - name: func
+      title: '#.function#'
+      type: 3
+      options:
+        type: str
+        items:
+        - title: '#_abspath#'
+          value: abspath
+        - title: '#_append#'
+          value: append
+        - title: '#_appendpath#'
+          value: appendpath
+        - title: '#_envvar#'
+          value: envvar
+        - title: '#_escapefilename#'
+          value: escapefile
+        - title: '#.filename#'
+          value: filename
+        - title: '#_hash#'
+          value: hash
+        - title: '#_length#'
+          value: length
+        - title: '#_lower#'
+          value: lower
+        - title: '#_upper#'
+          value: upper
+        - title: '#_now#'
+          value: now
+        - title: '#_split#'
+          value: split
+        - title: '#_substr#'
+          value: substr
+    - name: param
+      title: '#.parameters#'
+      type: 2
+langs:
+  en:
+    _abspath: Absolute Path
+    _append: Append
+    _appendpath: Append Path
+    _desc: Assign a value to a variable
+    _envvar: Get Environment Variable
+    _escapefilename: Escape Filename
+    _everywhere: Everywhere
+    _hash: Hash
+    _length: Length
+    _lower: Lower Case
+    _now: Current Time
+    _onlyvalue: Only in the Value
+    _onlyvar: Only in the Variable Name
+    _setvar: Set Variable
+    _split: Split
+    _subst: Substitute Variable Values
+    _substr: Substring
+    _upper: Upper Case
+  ru:
+    _abspath: Абсолютный путь
+    _append: Добавить
+    _appendpath: Добавить путь
+    _desc: Присвоить значение переменной
+    _envvar: Получить переменную окружения
+    _escapefilename: Исключить символы в имени файла
+    _everywhere: Везде
+    _hash: Хэш    
+    _length: Длина
+    _lower: Нижний регистр
+    _now: Текущее время
+    _onlyvalue: Только в значениях
+    _onlyvar: Только в имени переменной
+    _setvar: Установить переменную
+    _split: Разбить
+    _subst: Заменить значения переменных
+    _substr: Подстрока
+    _upper: Верхний регистр
+code: "obj vobj = JsonToObj(list) \n if subst & 1 == 1 : value = Macro(value)\n
+if subst & 2 == 2 : name = Macro(name)\n if vobj? {\n    if *value == 0 {\n          value = GetVar(name)\n    }\n    for vitem in vobj {\n        str param = Macro(item(vitem, \"param\").str())\n        switch item(vitem,  \"func\").str()\n        case \"abspath\" : value = AbsPath(value)\n        case \"append\": value += param\n        case \"appendpath\": value = JoinPath(value, param)\n        case \"envvar\" {\n              if !param? : param = value\n              value =  GetEnv(param)\n        }\n        case \"escapefile\" {\n              value = Replace(value, `:`, `_`).Replace(`/`, `_`).Replace(`\\`, `_`)\n        }\n        case \"filename\": value = BaseName(value)\n          case \"hash\" { switch Lower(param) \n       case `md5`, ``: value = Hex(Md5(value))\n         case `sha256`: value= Hex(Sha256(value))\n      default: error(100, `Unknown hash method`)  \n          }\n        case \"length\" {\n              int len\n              if IsVar(value) : len = *GetVar(value)\n              elif IsVarObj(value) : len = *GetVarObj(value)\n              else : len = *value\n              value = str(len)\n        }\n        case \"lower\": value = Lower(value)\n        case \"now\" {\n              if !param? : param = \"YYYY/MM/DD HH:mm:ss\"\n              value = Format(param, Now())\n         }\n        case \"split\" {\n              if param? {\n          arr v = Split(value, param)\n          value = v[0]\n            SetVar(name, obj(v))}}\n        case \"substr\" {\n             int offset length\n             arr par = Split(param, \":\")\n             offset = int(TrimSpace(par[0]))\n             if *par > 1 : length = int(TrimSpace(par[1]))\n             value = Substr(value, offset, Min(length, *value-offset))\n         }\n        case \"upper\": value = Upper(value)\n    }\n}\nSetVar(name, value)"

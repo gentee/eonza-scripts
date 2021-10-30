@@ -1,0 +1,94 @@
+settings:
+  name: remove-lines
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.text#"    
+  loglevel: 6
+  unrun: true
+  help: remove-lines
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+- name: toremove
+  title: '#_toremove#'
+  type: 1
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+tree:
+- name: split-text
+  values:
+    delim: '#.n#'
+    text: '#text#'
+    varname: lines
+- name: split-text
+  values:
+    delim: '#.n#'
+    text: '#toremove#'
+    varname: toremove
+- name: foreach
+  open: true
+  values:
+    varindex: iline
+    varitem: line
+    varname: lines
+  children:
+  - name: set-variable
+    values:
+      list: []
+      name: ok
+      subst: "0"
+      value: "1"
+  - name: foreach
+    open: true
+    values:
+      varitem: match
+      varname: toremove
+    children:
+    - name: if.eonza
+      open: true
+      values:
+        list:
+        - cmp: contains
+          next: "0"
+          not: false
+          value: '#match#'
+          var: line
+      children:
+      - name: set-variable
+        values:
+          list: []
+          name: ok
+          subst: "0"
+          value: "0"
+  - name: append-to-array
+    values:
+      _ifcond: GetVarInt("ok")  == 1
+      name: out
+      subst: "1"
+      value: '#line#'
+- name: join-text
+  values:
+    _ifcond: IsVarObj("out")
+    delim: '#.n#'
+    resultvar: result
+    varname: out
+- name: source-code
+  values:
+    code: ResultVar( GetVar("resultvar"), GetVar("result"))
+langs:
+  en:
+    _desc: |
+      Remove lines from the text
+    _name: Remove Lines
+    _toremove: Remove lines that contain
+  ru:
+    _desc: Удалить строки из текста
+    _name: Удалить строки
+    _toremove: Удалять строки которые содержат

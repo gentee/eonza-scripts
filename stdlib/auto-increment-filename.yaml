@@ -1,0 +1,48 @@
+settings:
+  name: auto-increment-filename
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: auto-increment-filename
+  helplang: ru
+params:
+- name: filename
+  title: '#.filename#'
+  type: 2
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Add suffix if file exists
+    _name: Auto Increment Filename
+  ru:
+    _desc: Добавить суффикс если файл существует
+    _name: Автоувеличение имени файла
+code: |
+  if !ExistFile(filename) {
+        SetVar(resultvar, filename)
+        return
+  }
+  str fname = BaseName(filename)
+  str dir = Dir(filename)
+  int inc
+  str original ret
+  arr names = Split(fname, ".")
+  arr.arr.str  a &= FindRegExp(names[0], `(.*) \((\d+)\)$`)
+  if *a? {
+      original = a[0][1]
+      inc = int(a[0][2])
+  } else : original = names[0]
+  while true {
+       names[0] = original + " (\{++inc})"
+       ret = JoinPath(dir, Join(names, "."))
+       if !ExistFile(ret) : break
+  }
+  SetVar(resultvar, ret)

@@ -1,0 +1,30 @@
+settings:
+  name: create-file-from-template
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 4
+  unrun: true
+  help: create-file-from-template
+  helplang: ru
+params:
+- name: template
+  title: '#_template#'
+  type: 1
+  options:
+    required: true
+- name: outputfile
+  title: '#.outputfile#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Create a file from the template
+    _name: Create File From Template
+    _template: Template
+  ru:
+    _desc: Создать текстовый файл из шаблона
+    _name: Создать файл из шаблона
+    _template: Шаблон
+code: WriteFile(outputfile, Macro(template))

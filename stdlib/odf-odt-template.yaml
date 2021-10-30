@@ -1,0 +1,30 @@
+settings:
+  name: odf-odt-template
+  title: '#_name#'
+  path: '#.stdlib#/#.office#'
+  desc: '#_desc#'
+  loglevel: 4
+  unrun: true
+  help: odf-odt-template
+  helplang: ru
+params:
+- name: template
+  title: '#_template#'
+  type: 2
+  options:
+    required: true
+- name: outputfile
+  title: '#.outputfile#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Replace variables in ODF/ODT template
+    _name: ODT Template
+    _template: Template (*.odt)
+  ru:
+    _desc: Заменить переменные в ODF/ODT шаблоне
+    _name: Шаблон ODT
+    _template: Шаблон (*.odt)
+code: OdtTemplate(template, outputfile)

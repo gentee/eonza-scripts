@@ -1,0 +1,76 @@
+settings:
+  name: create-archive
+  title: '#_name#'
+  path: "#.stdlib#/#.archive#"  
+  desc: '#_desc#'
+  loglevel: 4
+  help: create-archive
+  helplang: ru
+params:
+- name: zname
+  title: '#.outputfile#'
+  type: 2
+  options:
+    required: true
+- name: ztype
+  title: '#.type#'
+  type: 3
+  options:
+    items:
+    - title: zip
+    - title: tar.gz
+- name: path
+  title: '#.path#'
+  type: 2
+  options:
+    required: true
+- name: recursive
+  title: '#.recursive#'
+  type: 0
+  options:
+    initial: "true"
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+tree:
+- name: file-list
+  values:
+    _advanced: |-
+      params:
+          recursive: "#recursive#"
+    ignore: '#ignore#'
+    path: '#path#'
+    pattern: '#pattern#'
+    recursive: "true"
+    resultvar: list
+- name: source-code
+  open: true
+  values:
+    code: |
+      bool iszip = GetVar("ztype") == "zip"
+      str zname = GetVar("zname")
+      str path = GetVar("path")
+      handle harchive = ?(iszip, CreateZip(zname), CreateTarGz(zname))
+      obj list = GetVarObj("list")
+      int progress = ProgressStart(*list, 100, GetVar(`lng.packfiles`), ``)
+      for item in arr(list) {
+              finfo fi = {Name: item(item, "name").str(), Dir: item(item, "dir").str()}
+              str src = JoinPath(item(item, "dir").str(), item(item, "name").str())
+              CompressFile(harchive, src, ArchiveName(fi, path))
+              Progress(progress, 1)
+      }
+      ProgressEnd(progress)
+      if iszip : CloseZip(harchive)
+      else : CloseTarGz(harchive)
+langs:
+  en:
+    _desc: Create .zip or .tar.gz archive
+    _name: Create Archive
+    lng.packfiles: Packing files...
+  ru:
+    _desc: Создать .zip или .tar.gz архив
+    _name: Создать архив
+    lng.packfiles: Упаковка файлов...

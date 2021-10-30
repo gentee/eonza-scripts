@@ -1,0 +1,43 @@
+settings:
+  name: foreach-registry-value
+  title: '#_name#'
+  path: '#.stdlib#/Windows/#.registry#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: foreach-registry-value
+  helplang: ru
+params:
+- name: root
+  title: '#.rootkey#'
+  type: 3
+  options:
+    initial: "1"
+    flags: default.regkeys
+    type: int
+- name: subkey
+  title: '#.subkey#'
+  type: 2
+  options:
+    required: true
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: access
+  title: '#.access#'
+  type: 3
+  options:
+    initial: "0"
+    flags: default.regaccess
+    type: int
+langs:
+  en:
+    _desc: Execute for all values of the Registry key
+    _name: Foreach Registry Value
+  ru:
+    _desc: Выполнить для каждого значения в ключе Реестра
+    _name: Для каждого значения Реестра
+code: "arr list = RegistryValues(root, subkey, access)\n if *varname == 0 : return
+  \nfor item in list {\n    SetVar(varname, item)\n    %body%\n}"

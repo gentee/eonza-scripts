@@ -1,0 +1,27 @@
+settings:
+  name: markdown-to-html
+  title: '#_name#'
+  path: '#.stdlib#/#.encoding#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: markdown-to-html
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+langs:
+  en:
+    _desc: Convert markdown to html
+    _name: Markdown To HTML
+  ru:
+    _desc: Конвертировать Markdown в HTML
+    _name: Markdown в HTML
+code: |
+  SetVar( ?(*resultvar?, resultvar, varname), MarkdownToHTML( GetVar(varname) ))

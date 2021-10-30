@@ -1,0 +1,38 @@
+settings:
+  name: log-output
+  title: '#_logoutput#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.logconsole#"  
+  help: log-output
+  helplang: ru
+  loglevel: 6
+params:
+- name: level
+  title: '#.loglevel#'
+  type: 3
+  options:
+    type: int
+    items:
+    - title: '#.error#'
+      value: LOG_ERROR
+    - title: '#.warning#'
+      value: LOG_WARN
+    - title: '#.formdata#'
+      value: LOG_FORM
+    - title: '#.info#'
+      value: LOG_INFO
+    - title: '#.debug#'
+      value: LOG_DEBUG
+- name: text
+  title: '#.text#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Write to the log
+    _logoutput: Log Output
+  ru:
+    _desc: Записать в лог
+    _logoutput: Запись в лог
+code: LogOutput(level, text)

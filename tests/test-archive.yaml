@@ -1,0 +1,198 @@
+settings:
+  name: test-archive
+  title: '#_name#'
+  path: '#.tests#'
+  desc: '#_desc#'
+  loglevel: 6
+params:
+- name: dir
+  title: '#_dir#'
+  type: 2
+tree:
+- name: source-code
+  open: true
+  values:
+    _desc: Create initial files and folders
+    code: '%body%'
+  children:
+  - name: curdir
+    values:
+      _ifcond: '*GetVar("dir") == 0'
+      varname: dir
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: archive-tmp
+      name: dir
+      value: ""
+  - name: set-variable
+    values:
+      list:
+      - func: appendpath
+        param: test archive
+      name: path
+      value: '#dir#'
+  - name: create-dir
+    values:
+      path: '#path#'
+  - name: log-output
+    values:
+      level: LOG_INFO
+      text: Creating test files...
+  - name: source-code
+    values:
+      code: |
+        str temp = GetVar("path")
+        str fname = JoinPath(temp,`file.txt`)
+        str zdir1 = JoinPath(temp,`sub folder`)
+        str zdir2 = JoinPath(temp,`директория`)
+        str zdir3 = JoinPath(zdir2,`next level`)
+        str zdir4 = JoinPath(temp,`list`)
+        CreateDir(zdir4)
+        for i in 1..300 {
+            WriteFile(JoinPath(zdir4,`file%{i}.lst`), Repeat("Тестовое сообщение \{i*100}\r\n", 10000))
+        }
+        buf b = buf(Repeat("This is a test string\r\n",100000))
+        b += RandomBuf(40000000)
+        for i in 1..300 {
+             b += buf("Line \{i}: тестовое сообщение\n")
+        }
+        b += buf(Hex(RandomBuf(5000000)))
+        WriteFile(fname, b)
+        WriteFile(JoinPath(temp,`temp.txt`), Repeat("very small file", 100))
+        CreateDir(zdir1)
+        WriteFile(JoinPath(zdir1,`русский`), Repeat("Тестовое сообщение", 100))
+        WriteFile(JoinPath(zdir1,`ooops.txt`), Repeat("OOOPS ooops", 1000))
+        CreateDir(zdir3)
+        CreateDir(JoinPath(zdir2, `empty`))
+        WriteFile(JoinPath(zdir2,`tests.dat`), Repeat("What would you like to do?\n", 500000))
+        WriteFile(JoinPath(zdir3,`deep file`), Repeat("That's all right\r\n", 500))
+  - name: directory-size
+    values:
+      path: '#path#'
+      resultvar: di
+  - name: assertions
+    values:
+      errmsg: init archive
+      list:
+      - cmp: equal
+        not: false
+        value: "193758692"
+        var: di
+      - cmp: equal
+        not: false
+        value: "306"
+        var: di.files
+      - cmp: equal
+        not: false
+        value: "5"
+        var: di.dirs
+- name: source-code
+  values:
+    _desc: Create archives
+    code: '%body%'
+  children:
+  - name: create-archive
+    values:
+      path: '#path#'
+      recursive: "true"
+      zname: '#dir#/out1.zip'
+      ztype: zip
+  - name: create-archive
+    values:
+      path: '#path#'
+      pattern: /\.lst$/
+      recursive: "true"
+      zname: '#dir#/out-lst.tar.gz'
+      ztype: tar.gz
+  - name: create-archive
+    values:
+      path: '#path#'
+      pattern: ""
+      recursive: false
+      zname: '#dir#/out-txt.zip'
+      ztype: zip
+  - name: create-archive
+    values:
+      ignore: list
+      path: '#path#'
+      pattern: ""
+      recursive: true
+      zname: '#dir#/out-skip.zip'
+      ztype: zip
+  - name: delete-dir
+    values:
+      path: '#path#'
+- name: unpack-zip
+  values:
+    path: '#path#'
+    zname: '#dir#/out1.zip'
+- name: directory-size
+  values:
+    path: '#path#'
+    resultvar: dtest
+- name: assertions
+  values:
+    errmsg: unpacked archive
+    list:
+    - cmp: equal
+      not: false
+      value: '#dtest.size#'
+      var: di.size
+    - cmp: equal
+      not: false
+      value: '#dtest.files#'
+      var: di.files
+    - cmp: equal
+      not: false
+      value: '#dtest.dirs#'
+      var: di.dirs
+- name: unpack-zip
+  values:
+    path: '#dir#/unpack'
+    pattern: file.txt
+    zname: '#dir#/out-txt.zip'
+- name: unpack-zip
+  values:
+    ignore: /.txt/
+    path: '#dir#/unpack'
+    pattern: ""
+    zname: '#dir#/out-skip.zip'
+- name: unpack-targz
+  values:
+    path: '#dir#/unpack'
+    pattern: sub folder/*.txt
+    zname: '#dir#/out-lst.tar.gz'
+- name: directory-size
+  values:
+    path: '#dir#/unpack'
+    resultvar: dtmp
+- name: assertions
+  values:
+    errmsg: init archive
+    list:
+    - cmp: equal
+      not: false
+      value: "65826192"
+      var: dtmp
+    - cmp: equal
+      not: false
+      value: "4"
+      var: dtmp.files
+    - cmp: equal
+      not: false
+      value: "4"
+      var: dtmp.dirs
+- name: delete-dir
+  values:
+    path: '#dir#'
+langs:
+  en:
+    _desc: Test archive commands
+    _dir: Path for test folder
+    _name: Test - Archive
+  ru:
+    _desc: Тестирование скриптов архивации
+    _dir: Путь для папки тестирования
+    _name: Тест- Архивы

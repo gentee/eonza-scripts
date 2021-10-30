@@ -1,0 +1,40 @@
+settings:
+  name: regex-replace
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.text#"    
+  loglevel: 6
+  unrun: true
+  help: regex-replace
+  helplang: ru
+params:
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: regex
+  title: '#.regex#'
+  type: 2
+  options:
+    required: true
+- name: repval
+  title: '#_repstring#'
+  type: 2
+  options:
+    required: true
+- name: resultvar
+  title: '#.resultvar#'
+  type: 2
+langs:
+  en:
+    _desc: Replace matches of the regular expression
+    _name: RegEx - Replace
+    _repstring: Replacement String
+  ru:
+    _desc: Заменить вхождения регулярного выражения
+    _name: RegEx - Заменить
+    _repstring: Строка замены
+code: |
+  str val = GetVar(varname)
+  SetVar( ?(*resultvar?, resultvar, varname), ReplaceRegExp(GetVar(varname), regex, repval))
