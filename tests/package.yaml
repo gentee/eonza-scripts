@@ -1,0 +1,15 @@
+version: 1.0
+info:
+  title: "#.tests#"
+  desc: '#_desc#'
+langs:
+  en:
+    _desc: Tests for the standard library
+    _dir: Path for test folder
+  ru:
+    _desc: Тесты для стандартной библиотеки
+    _dir: Путь для папки тестирования
+params:
+- name: tests.dir
+  title: '#_dir#'
+  type: 2
