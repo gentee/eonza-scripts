@@ -17,6 +17,15 @@ tree:
       var: eonza
     - value: There are my@eonza.org and your@eonza.com
       var: emails
+    - value: |-
+        {"test": "Test",
+        "list": [0,1,2],
+        "sub": {
+            "id": 7,
+            "value": "text"
+        }
+        }
+      var: forjson
 - name: source-code
   values:
     _desc: RegEx & Replace
@@ -179,3 +188,55 @@ tree:
       not: false
       value: "true"
       var: yamlret.ooops.reload
+- name: convert-json-to-variable
+  values:
+    json: |-
+      {"name": "John Doe",
+      "Company": "Рога и копыта",
+      "age": 36
+      }
+    varname: fromjson
+- name: convert-json-to-variable
+  values:
+    json: forjson
+    varname: fromvar
+- name: assertions
+  values:
+    errmsg: Convert JSON to Variable
+    list:
+    - cmp: equal
+      not: false
+      value: John Doe
+      var: fromjson.name
+    - cmp: equal
+      not: false
+      value: Рога и копыта
+      var: fromjson.Company
+    - cmp: equal
+      not: false
+      value: "36"
+      var: fromjson.age
+    - cmp: equal
+      not: false
+      value: Test
+      var: fromvar.test
+    - cmp: equal
+      not: false
+      value: "1"
+      var: fromvar.list[1]
+    - cmp: equal
+      not: false
+      value: 7text
+      var: '#fromvar.sub.id##fromvar.sub.value#'
+    - cmp: equal
+      not: false
+      value: '{"Company":"Рога и копыта","age":36,"name":"John Doe"}'
+      var: fromjson
+    - cmp: equal
+      not: false
+      value: '[0,1,2]'
+      var: fromvar.list
+    - cmp: equal
+      not: false
+      value: '{"id":7,"value":"text"}'
+      var: fromvar.sub
