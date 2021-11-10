@@ -7,6 +7,8 @@ params:
 - name: dir
   title: '#_dir#'
   type: 2
+  options: 
+    default: "#tests.dir#"
 tree:
 - name: source-code
   open: true
@@ -43,11 +45,11 @@ tree:
     disable: true
     values:
       code: |-
-        Asset("files/tests/test.docx", JoinPath(Macro("#dir#"), "test.docx"))
-        Asset("files/tests/test.odt", JoinPath(Macro("#dir#"), "test.odt"))
-        Asset("files/tests/test.ods", JoinPath(Macro("#dir#"), "test.ods"))
-        Asset("files/tests/test.xlsx", JoinPath(Macro("#dir#"), "test.xlsx"))
-        Asset("files/tests/rows.xlsx", JoinPath(Macro("#dir#"), "rows.xlsx"))
+        PkgFile("files/test.docx", JoinPath(Macro("#dir#"), "test.docx"))
+        PkgFile("files/test.odt", JoinPath(Macro("#dir#"), "test.odt"))
+        PkgFile("files/test.ods", JoinPath(Macro("#dir#"), "test.ods"))
+        PkgFile("files/test.xlsx", JoinPath(Macro("#dir#"), "test.xlsx"))
+        PkgFile("files/rows.xlsx", JoinPath(Macro("#dir#"), "rows.xlsx"))
   - name: foreach-line
     open: true
     values:
@@ -67,7 +69,7 @@ tree:
     - name: source-code
       values:
         code: |
-          Asset(Macro("files/tests/#assetfile#"), JoinPath(Macro("#dir#"), Macro("#assetfile#")))
+          PkgFile(Macro("files/#assetfile#"), JoinPath(Macro("#dir#"), Macro("#assetfile#")))
 - name: set-variables
   values:
     list:

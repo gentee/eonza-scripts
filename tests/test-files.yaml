@@ -8,6 +8,8 @@ params:
 - name: dir
   title: '#_dir#'
   type: 2
+  options: 
+    default: "#tests.dir#"
 tree:
 - name: source-code
   values:

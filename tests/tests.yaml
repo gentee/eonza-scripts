@@ -9,7 +9,7 @@ tree:
   values:
     list:
     - type: "2"
-      value: '#.apppath#'
+      value: '#tests.dir#'
       var: testpath
 - name: form
   values:
