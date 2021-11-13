@@ -1,0 +1,147 @@
+settings:
+  name: export-todoist
+  title: '#_name#'
+  path: Todoist
+  desc: '#_desc#'
+  loglevel: 6
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+- name: zipname
+  title: '#_zipname#'
+  type: 2
+  options:
+    initial: todoist
+    default: todoist
+    required: true
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: '#.temppath#/todoist'
+      var: temp
+    - value: ""
+      var: comments
+- name: set-log-level
+  disable: true
+  values:
+    level: LOG_WARN
+- name: create-dir
+  values:
+    path: '#temp#'
+- name: foreach-line
+  open: true
+  values:
+    text: |-
+      projects
+      sections
+      tasks
+      labels
+    varname: item
+  children:
+  - name: httprequest
+    values:
+      headers:
+      - name: Authorization
+        value: 'Bearer #todoist.token#'
+      method: GET
+      pars: []
+      url: '#todoist.api#/#item#'
+      varname: ret
+  - name: write-file
+    values:
+      filename: '#temp#/#item#.json'
+      name: ret
+  - name: source-code
+    open: true
+    values:
+      _desc: Export comments
+      _ifcond: GetVar("item") == "projects" || GetVar("item") == "tasks"
+      code: '%body%'
+    children:
+    - name: parse-json
+      values:
+        resultvar: list
+        value: '#ret#'
+    - name: foreach
+      open: true
+      values:
+        varitem: data
+        varname: list
+      children:
+      - name: if.eonza
+        open: true
+        values:
+          _ifcond: int(Macro("#data.comment_count#")) > 0
+          elsevar: ""
+          list: []
+        children:
+        - name: httprequest
+          values:
+            headers:
+            - name: Authorization
+              value: 'Bearer #todoist.token#'
+            method: GET
+            pars: []
+            url: '#todoist.api#/comments?task_id=#data.id#'
+            varname: comment
+        - name: set-variable
+          values:
+            list:
+            - func: append
+              param: '#comment#,'
+            name: comments
+            subst: "1"
+            value: ""
+- name: if.eonza
+  open: true
+  values:
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: comments
+  children:
+  - name: source-code
+    values:
+      code: |
+        SetVar("comments", TrimRight(GetVar("comments"), ","))
+  - name: write-file
+    values:
+      append: false
+      filename: '#temp#/comments.json'
+      name: ""
+      text: |-
+        [
+        #comments#
+        ]
+- name: source-code
+  values:
+    code: |-
+      str path = GetVar("path")
+      str zipname = GetVar("zipname")
+      if *zipname == 0 : zipname = "todoist"
+      if Ext(zipname) != "zip" : zipname += ".zip"
+      if *path? : zipname = JoinPath(path, zipname)
+      SetVar("resfile", zipname)
+- name: create-archive
+  values:
+    path: '#temp#'
+    pattern: '*.json'
+    recursive: false
+    zname: '#resfile#'
+    ztype: zip
+- name: delete-dir
+  values:
+    path: '#temp#'
+langs:
+  en:
+    _desc: Export Todoist projects and tasks to zip
+    _name: Export Todoist
+    _zipname: Archive name (.zip)
+  ru:
+    _desc: Экспорт Todoist проектов и задач в zip
+    _name: Экспорт Todoist
+    _zipname: Имя архива (.zip)

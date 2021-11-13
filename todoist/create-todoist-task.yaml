@@ -1,0 +1,85 @@
+settings:
+  name: create-todoist-task
+  title: '#_name#'
+  path: Todoist
+  desc: '#_desc#'
+  loglevel: 6
+params:
+- name: content
+  title: '#_content#'
+  type: 2
+  options:
+    required: true
+- name: due
+  title: '#_duedate#'
+  type: 2
+  options:
+    required: true
+- name: desc
+  title: '#.desc#'
+  type: 2
+  options:
+    optional: true
+- name: priority
+  title: priority
+  type: 2
+  options:
+    optional: true
+- name: project
+  title: project
+  type: 2
+  options:
+    optional: true
+- name: section
+  title: section
+  type: 2
+  options:
+    optional: true
+tree:
+- name: source-code
+  values:
+    code: "str more\nstr due = GetVar(\"due\") \nif Match(due, `^\\d\\d\\d\\d-\\d\\d-\\d\\d$`)
+      : more = `\"due_date\":\"%{due}\"`\nelse : more = `\"due_string\":\"%{due}\"`\nstr
+      tmp = GetVar(\"desc\")\nif *tmp? : more += `, \"description\": \"%{tmp}\"`\ntmp
+      = GetVar(\"project\")\nif *tmp? : more += `, \"project_id\": %{int(tmp)}`\ntmp
+      = GetVar(\"section\")\nif *tmp? : more += `, \"section_id\": %{int(tmp)}`\ntmp
+      = GetVar(\"priority\")\nif *tmp? : more += `, \"priority\": %{int(tmp)}`\nSetVar(\"more\",
+      more)"
+- name: send-json-request
+  values:
+    _optional: 'response: resp'
+    headers:
+    - name: Authorization
+      value: 'Bearer #todoist.token#'
+    jsondata: |-
+      {
+          "content": "#content#",
+          #more#
+      }
+    url: '#todoist.api#/tasks'
+    varname: ret
+- name: source-code
+  open: true
+  values:
+    code: |-
+      int status = int(Macro("#resp.statuscode#"))
+      if status < 200 || status > 299 {
+          %body%
+      }
+  children:
+  - name: error.eonza
+    values:
+      _ifcond: ""
+      code: "1"
+      text: '#resp#'
+langs:
+  en:
+    _content: Content
+    _desc: Create Todoist task
+    _duedate: Due Date
+    _name: Create Todoist Task
+  ru:
+    _content: Содержание
+    _desc: Создать Todoist задачу
+    _duedate: Срок выполнения
+    _name: Создать Todoist задачу

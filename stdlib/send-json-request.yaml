@@ -1,0 +1,50 @@
+settings:
+  name: send-json-request
+  title: '#_name#'
+  path: '#.stdlib#/#.network#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: send-json-request
+  helplang: ru
+params:
+- name: url
+  title: '#.url#'
+  type: 2
+  options:
+    required: true
+- name: jsondata
+  title: JSON
+  type: 1
+- name: varname
+  title: '#.varname#'
+  type: 2
+- name: headers
+  title: '#_headers#'
+  type: 5
+  options:
+    list:
+    - name: name
+      title: '#.name#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 2
+- name: response
+  title: response
+  type: 2
+  options:
+    optional: true
+langs:
+  en:
+    _desc: Send a JSON HTTP request
+    _headers: Headers
+    _name: Send JSON Request
+  ru:
+    _desc: Послать JSON HTTP запрос
+    _headers: Заголовки
+    _name: Послать JSON запрос
+code: "map heads\nfor vitem in JsonToObj(headers)  {\n      heads[item(vitem,\"name\").str()]
+  = Macro(item(vitem,\"value\").str())\n}\nstr resp = JSONRequest(url, jsondata, heads,
+  response)\nSetVar(varname, resp)\nif *response? {\n    int status = int(Macro(\"#\\{response}.statuscode#\"))\n
+  \   if status < 200 || status > 299 : return \n}\nSetVar(varname, JsonToObj(resp))"
