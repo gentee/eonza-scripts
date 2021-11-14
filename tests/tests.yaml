@@ -4,6 +4,8 @@ settings:
   path: '#.tests#'
   desc: '#_desc#'
   loglevel: 6
+  help: "@all-tests"
+  helplang: ru
 tree:
 - name: set-variables
   values:

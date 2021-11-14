@@ -4,6 +4,8 @@ settings:
   path: Todoist
   desc: '#_desc#'
   loglevel: 6
+  help: "@export-todoist"
+  helplang: ru
 params:
 - name: path
   title: '#.path#'

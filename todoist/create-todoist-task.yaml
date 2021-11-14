@@ -4,6 +4,8 @@ settings:
   path: Todoist
   desc: '#_desc#'
   loglevel: 6
+  help: "@create-todoist-task"
+  helplang: ru
 params:
 - name: content
   title: '#_content#'
