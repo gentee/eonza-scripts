@@ -22,17 +22,17 @@ params:
     optional: true
 - name: priority
   title: priority
-  type: 2
+  type: 4
   options:
     optional: true
 - name: project
   title: project
-  type: 2
+  type: 4
   options:
     optional: true
 - name: section
   title: section
-  type: 2
+  type: 4
   options:
     optional: true
 tree:

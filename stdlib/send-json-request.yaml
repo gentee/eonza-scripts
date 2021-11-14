@@ -43,7 +43,7 @@ langs:
   ru:
     _desc: Послать JSON HTTP запрос
     _headers: Заголовки
-    _name: Послать JSON запрос
+    _name: Отправить JSON запрос
 code: "map heads\nfor vitem in JsonToObj(headers)  {\n      heads[item(vitem,\"name\").str()]
   = Macro(item(vitem,\"value\").str())\n}\nstr resp = JSONRequest(url, jsondata, heads,
   response)\nSetVar(varname, resp)\nif *response? {\n    int status = int(Macro(\"#\\{response}.statuscode#\"))\n
