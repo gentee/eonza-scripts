@@ -102,9 +102,9 @@ tree:
       type: "6"
       var: gettitle
     - options: |-
-        {"items":[{"title":"Apple", "value": "https://www.apple.com"},
+        {"items":[{"title":"Wikipedia", "value": "https://www.wikipedia.org"},
+        {"title":"Apple", "value": "https://www.apple.com"},
         {"title":"Microsoft", "value": "https://www.microsoft.com"},
-        {"title":"Wikipedia", "value": "https://www.wikipedia.org"},
         {"title":"Google", "value": "https://www.google.com"}]}
       text: ""
       type: "3"
@@ -179,14 +179,14 @@ tree:
     - func: length
       param: ""
     name: size
-    subst: "0"
+    subst: "1"
     value: '#answer#'
 - name: parse-html
   values:
     html: '#answer#'
     selectors:
     - attrib: ""
-      selector: title
+      selector: head title
       var: title
     - attrib: content
       func: abspath
@@ -194,7 +194,7 @@ tree:
       var: desc
 - name: set-variable
   values:
-    list: []
+    list: {}
     name: webpage
     subst: "0"
     value: |
