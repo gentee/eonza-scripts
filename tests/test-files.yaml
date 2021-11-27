@@ -8,8 +8,8 @@ params:
 - name: dir
   title: '#_dir#'
   type: 2
-  options: 
-    default: "#tests.dir#"
+  options:
+    default: '#tests.dir#'
 tree:
 - name: source-code
   values:
@@ -212,6 +212,45 @@ tree:
   values:
     onlyexist: true
     path: unknown.file
+- name: source-code
+  open: true
+  values:
+    _desc: Temp files
+    code: '%body%'
+  children:
+  - name: create-temporary-file
+    values:
+      name: tmpfile
+      pattern: pref
+      text: OK
+  - name: read-file
+    values:
+      filename: '#tmpfile#'
+      name: tmpval
+  - name: delete-file
+    values:
+      path: '#tmpfile#'
+  - name: create-temporary-file
+    values:
+      _optional: 'path: #testpath#'
+      name: tmpfile
+      pattern: pref*.txt
+      text: OK
+  - name: read-file
+    values:
+      filename: '#tmpfile#'
+      name: tmpval2
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: OK
+        var: tmpval
+      - cmp: equal
+        not: false
+        value: OK
+        var: tmpval2
 - name: source-code
   values:
     _desc: Auto increment

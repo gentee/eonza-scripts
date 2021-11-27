@@ -1,0 +1,37 @@
+settings:
+  name: create-temporary-file
+  title: '#_name#'
+  path: '#.stdlib#/#.files#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: write-file
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 1
+- name: pattern
+  title: '#_pattern#'
+  type: 2
+- name: name
+  title: '#.resultvar#'
+  type: 2
+  options:
+    required: true
+- name: path
+  title: path
+  type: 2
+  options:
+    optional: true
+langs:
+  en:
+    _desc: Create a temporary file
+    _name: Temporary File
+    _pattern: Filename Pattern
+  ru:
+    _desc: Создать временный файл
+    _name: Временный файл
+    _pattern: Шаблон имени файла
+code: |
+  SetVar(name, TempFile(path, pattern, text))
