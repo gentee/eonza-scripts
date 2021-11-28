@@ -2,6 +2,7 @@ settings:
   name: bash
   title: Bash
   desc: '#_desc#'
+  path: "#.stdlib#/#.applications#"
   loglevel: 0
   help: bash
   helplang: ru
