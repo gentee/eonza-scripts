@@ -5,7 +5,7 @@ settings:
   desc: '#_desc#'
   loglevel: 6
   unrun: true
-  help: write-file
+  help: create-temporary-file
   helplang: ru
 params:
 - name: text

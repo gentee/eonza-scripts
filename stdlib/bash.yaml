@@ -2,9 +2,7 @@ settings:
   name: bash
   title: Bash
   desc: '#_desc#'
-  path: "#.stdlib#/#.applications#"
-  loglevel: 4
-  unrun: true
+  loglevel: 0
   help: bash
   helplang: ru
 params:
@@ -15,28 +13,64 @@ params:
     required: true
 - name: sudo
   title: '#_sudopass#'
-  type: 2    
+  type: 2
   options:
-    flags: "password"
-- name: wait
-  title: '#.waitfinish#'
-  type: 0
-  options:
-    initial: "1"
+    flags: password
+tree:
+- name: create-temporary-file
+  values:
+    name: shfile
+    pattern: tmp*.sh
+    text: '#source#'
+- name: if.eonza
+  open: true
+  values:
+    elsevar: bash
+    list:
+    - cmp: equal
+      next: "0"
+      not: true
+      value: ""
+      var: sudo
+  children:
+  - name: create-temporary-file
+    values:
+      name: sudofile
+      pattern: tmp*.sh
+      text: |-
+        echo $1 | sudo -S bash : &> /dev/null 2>&1
+        sudo bash "#shfile#"
+  - name: run.eonza
+    values:
+      _advanced: ""
+      cmdline: '"#sudofile#" "#sudo#"'
+      path: bash
+      wait: true
+- name: if.eonza
+  open: true
+  values:
+    elsevar: bash
+    list: []
+  children:
+  - name: run.eonza
+    values:
+      _advanced: ""
+      cmdline: '"#shfile#"'
+      path: bash
+      wait: true
+- name: delete-file
+  values:
+    _ifcond: '*GetVar("sudo")?'
+    path: '#sudofile#'
+- name: delete-file
+  values:
+    path: '#shfile#'
 langs:
   en:
-    _desc: Run a bash script
     _bashscript: Bash Script
+    _desc: Run a bash script
     _sudopass: sudo Password
   ru:
-    _desc: Выполнить bash скрипт
     _bashscript: Bash скрипт
+    _desc: Выполнить bash скрипт
     _sudopass: Пароль sudo
-code: |-
-   if *sudo? { 
-      if wait : Run("sudo", "-S", "-k", "bash", stdin: buf(sudo + "\n" + source))
-      else : Start("sudo", "-S", "-k", "bash", stdin: buf(sudo + "\n" + source))
-   }
-   elif wait : Run("bash", stdin: buf(source))
-   else : Start("bash", stdin: buf(source))
-
