@@ -1,0 +1,67 @@
+settings:
+  name: dismount-veracrypt-volume
+  title: '#_name#'
+  path: VeraCrypt
+  desc: '#_desc#'
+  loglevel: 0
+  help: "@dismount-veracrypt-volume"
+  helplang: ru
+params:
+- name: drive
+  title: '#_drive#'
+  type: 2
+- name: sudo
+  title: '#_sudo#'
+  type: 2
+  options:
+    flags: password
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: '#.os#'
+      var: os
+- name: if.eonza
+  open: true
+  values:
+    elsevar: ifos
+    list:
+    - cmp: equal
+      next: "0"
+      not: false
+      value: windows
+      var: os
+  children:
+  - name: run.eonza
+    values:
+      cmdline: '/q /d #drive#'
+      path: '#veracrypt.app#'
+      wait: true
+- name: if.eonza
+  open: true
+  values:
+    elsevar: ifos
+    list: {}
+  children:
+  - name: source-code
+    values:
+      code: |
+        str drive = GetVar("drive")
+        if *drive? : SetVar("drive", `--dismount "%{drive}"` )
+        else : SetVar("drive", `--dismount` )
+  - name: bash
+    values:
+      source: '#veracrypt.app#  --text #drive#'
+      sudo: '#sudo#'
+      wait: "1"
+langs:
+  en:
+    _desc: Dismount VeraCrypt Volume
+    _drive: Drive Letter/Mount Directory
+    _name: Dismount VeraCrypt Volume
+    _sudo: sudo Password (for Linux)
+  ru:
+    _desc: Размонтировать том VeraCrypt
+    _drive: Drive Letter/Mount Directory
+    _name: Размонтировать том VeraCrypt
+    _sudo: Пароль sudo (для Linux)

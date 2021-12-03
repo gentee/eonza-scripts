@@ -1,0 +1,113 @@
+settings:
+  name: mount-veracrypt-volume
+  title: '#_name#'
+  path: VeraCrypt
+  desc: '#_desc#'
+  loglevel: 0
+  help: "@mount-veracrypt-volume"
+  helplang: ru
+params:
+- name: vcfile
+  title: '#_volume#'
+  type: 2
+  options:
+    required: true
+- name: password
+  title: '#.password#'
+  type: 2
+  options:
+    required: true
+    flags: password
+- name: drive
+  title: '#_drive#'
+  type: 2
+- name: keyfile
+  title: '#_keyfile#'
+  type: 2
+- name: sudo
+  title: '#_sudo#'
+  type: 2
+  options:
+    flags: password
+- name: pim
+  title: PIM
+  type: 2
+  options:
+    default: "0"
+    optional: true
+- name: slot
+  title: Slot
+  type: 2
+  options:
+    default: "1"
+    optional: true
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: '#.os#'
+      var: os
+- name: if.eonza
+  open: true
+  values:
+    elsevar: ifos
+    list:
+    - cmp: equal
+      next: "0"
+      not: false
+      value: windows
+      var: os
+  children:
+  - name: source-code
+    values:
+      code: |-
+        str drive = GetVar("drive")
+        if *drive? : drive = "/l \{ Lower(Substr(drive, 0, 1))}"
+        else : drive = "/a"
+        SetVar("letter", drive)
+  - name: run.eonza
+    values:
+      cmdline: '/q /v "#vcfile#" #letter# /p "#password#"'
+      path: '#veracrypt.app#'
+      wait: true
+- name: if.eonza
+  open: true
+  values:
+    elsevar: ifos
+    list: []
+  children:
+  - name: set-variable
+    values:
+      _ifcond: '*GetVar("drive") == 0'
+      list: {}
+      name: drive
+      subst: "1"
+      value: /mnt
+  - name: set-variable
+    values:
+      _ifcond: '*GetVar("slot") >0'
+      list: {}
+      name: slot
+      subst: "1"
+      value: ' --slot #slot#'
+  - name: bash
+    values:
+      source: '#veracrypt.app#  --text --mount "#vcfile#" #drive# --password "#password#"
+        --pim "#pim#" --keyfiles "#keyfile#" --protect-hidden no #slot# --verbose'
+      sudo: '#sudo#'
+      wait: "1"
+langs:
+  en:
+    _desc: Mount VeraCrypt Volume
+    _drive: Drive Letter/Mount Directory
+    _keyfile: Keyfile
+    _name: Mount VeraCrypt Volume
+    _sudo: sudo Password (for Linux)
+    _volume: VeraCrypt Volume
+  ru:
+    _desc: Монтировать том VeraCrypt
+    _drive: Буква диска/Директория монтирования
+    _keyfile: Файл-ключ
+    _name: Монтировать том VeraCrypt
+    _sudo: Пароль sudo (для Linux)
+    _volume: Том VeraCrypt

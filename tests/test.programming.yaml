@@ -20,6 +20,47 @@ params:
     - title: return while
       value: retwhile
 tree:
+- name: source-code
+  open: true
+  values:
+    _ifcond: GetVar("mode") == "retvar"
+    _desc: SplitQuoteLine
+    code: |-
+      arr pars = SplitQuoteLine(`\p рус -n -p="тест" "c:\мои док\file.txt"  "" 'A "B C" D'`)
+      SetVar("qpars", obj(pars))
+      %body%
+  children:
+  - name: assertions
+    values:
+      list:
+      - cmp: equal
+        not: false
+        value: \p
+        var: qpars[0]
+      - cmp: equal
+        not: false
+        value: рус
+        var: qpars[1]
+      - cmp: equal
+        not: false
+        value: -n
+        var: qpars[2]
+      - cmp: equal
+        not: false
+        value: -p="тест"
+        var: qpars[3]
+      - cmp: equal
+        not: false
+        value: c:\мои док\file.txt
+        var: qpars[4]
+      - cmp: equal
+        not: false
+        value: ""
+        var: qpars[5]
+      - cmp: equal
+        not: false
+        value: A "B C" D
+        var: qpars[6]
 - name: set-variables
   values:
     list:
