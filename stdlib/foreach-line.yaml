@@ -3,7 +3,7 @@ settings:
   title: '#_name#'
   path: '#.stdlib#/#.text#'
   desc: '#_desc#'
-  loglevel: 6
+  loglevel: 0
   unrun: true
   help: foreach-line
   helplang: ru

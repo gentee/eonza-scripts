@@ -3,7 +3,7 @@ settings:
   title: '#_name#'
   path: '#.stdlib#/Windows/#.registry#'
   desc: '#_desc#'
-  loglevel: 6
+  loglevel: 0
   unrun: true
   help: foreach-registry-value
   helplang: ru

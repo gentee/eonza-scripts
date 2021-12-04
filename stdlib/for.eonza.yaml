@@ -5,7 +5,7 @@ settings:
   path: "#.stdlib#/#.programming#"
   help: for-statement
   helplang: ru
-  loglevel: 6
+  loglevel: 0
   unrun: true
 params:
 - name: initial
