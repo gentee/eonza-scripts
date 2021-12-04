@@ -84,7 +84,6 @@ tree:
            }
       }
       CopyFile(src, destfile)
-      LogOutput(LOG_INFO, "=> copy_file(\{src},\{dest})")
       if GetVarBool("savetime") {
             finfo fi = FileInfo(src)
             SetFileTime(destfile, fi.Time)

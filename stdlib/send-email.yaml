@@ -55,4 +55,3 @@ code: |-
   email["subject"] = subject
   email["body"] = body
   SendEmail(GetVarObj(smtpserver), obj(email))
-  LogOutput(LOG_INFO, "=> send-email(\{from},\{to},\{subject})")

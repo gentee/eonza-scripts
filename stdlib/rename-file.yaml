@@ -82,7 +82,6 @@ tree:
            }
       }
       Rename(src, destfile)
-      LogOutput(LOG_INFO, "=> rename-file(\{src},\{BaseName(destfile)})")
   children:
   - name: file-confirmation
     values:

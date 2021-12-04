@@ -83,7 +83,6 @@ tree:
            }
       }
       Rename(src, destfile)
-      LogOutput(LOG_INFO, "=> move_file(\{src},\{destfile})")
   children:
   - name: file-confirmation
     values:
