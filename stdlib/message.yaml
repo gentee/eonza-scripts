@@ -5,7 +5,7 @@ settings:
   path: "#.stdlib#/#.forms#"      
   help: message
   helplang: ru
-  loglevel: 6
+  loglevel: 3
   unrun: true
 params:
 - name: icon
