@@ -24,9 +24,9 @@ tree:
   open: true
   values:
     _ifcond: GetVar("mode") == "retvar"
-    _desc: SplitQuoteLine
+    _desc: SplitCmdLine
     code: |-
-      arr pars = SplitQuoteLine(`\p рус -n -p="тест" "c:\мои док\file.txt"  "" 'A "B C" D'`)
+      arr pars = SplitCmdLine(`\p рус -n -p="тест" "c:\мои док\file.txt"  "" 'A "B C" D'`)
       SetVar("qpars", obj(pars))
       %body%
   children:

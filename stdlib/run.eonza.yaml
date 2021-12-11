@@ -29,6 +29,6 @@ langs:
     _runapp: Запустить приложение
     _cmdline: Параметры командной строки
 code: |-
-  arr params = SplitQuoteLine(cmdline)
+  arr params = SplitCmdLine(cmdline)
   if wait : Run(path, params)
   else : Start(path, params)
