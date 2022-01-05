@@ -35,6 +35,8 @@ params:
           value: "8"
         - title: '#.password#'
           value: "9"
+        - title: '#.checklist#'
+          value: "10"
     - name: text
       title: '#.text#'
       type: 2
