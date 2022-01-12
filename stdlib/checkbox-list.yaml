@@ -1,0 +1,67 @@
+settings:
+  name: checkbox-list
+  title: '#_name#'
+  path: '#.stdlib#/#.forms#'
+  desc: '#_desc#'
+  loglevel: 3
+  unrun: true
+  help: checkbox-list
+  helplang: ru
+params:
+- name: text
+  title: '#.text#'
+  type: 2
+- name: varname
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+- name: columns
+  title: '#_columns#'
+  type: 5
+  options:
+    list:
+    - name: value
+      title: '#.value#'
+      type: 2
+    - name: text
+      title: '#.name#'
+      type: 2
+tree:
+- name: source-code
+  values:
+    code: |+
+      SetVar("sysflags", SetSystemFlags(0x10000000 | 0x0001))
+      SetVar("list", GetResultVarObj( GetVar("varname")))
+      SetVar("columns", JsonToObj(GetVar("columns")))
+
+- name: set-variable
+  values:
+    list: {}
+    name: title
+    subst: "1"
+    value: <div >#text#</div>
+- name: form
+  values:
+    list:
+    - options: '{"if": "text"}'
+      text: ""
+      type: "6"
+      var: title
+    - options: ""
+      text: columns
+      type: "10"
+      var: list
+- name: source-code
+  values:
+    code: |
+      SetSystemFlags(GetVarInt("sysflags"))
+langs:
+  en:
+    _columns: Columns
+    _desc: Show checkbox list
+    _name: Checkbox List
+  ru:
+    _columns: Столбцы
+    _desc: Показать список чекбоксов
+    _name: Список чекбоксов
