@@ -1,8 +1,8 @@
 settings:
   name: test.programming
   title: '#_name#'
+  path: '#.tests#'
   desc: '#_desc#'
-  path: "#.tests#"
   loglevel: 6
 params:
 - name: retvar
@@ -21,10 +21,9 @@ params:
       value: retwhile
 tree:
 - name: source-code
-  open: true
   values:
-    _ifcond: GetVar("mode") == "retvar"
     _desc: SplitCmdLine
+    _ifcond: GetVar("mode") == "retvar"
     code: |-
       arr pars = SplitCmdLine(`\p рус -n -p="тест" "c:\мои док\file.txt"  "" 'A "B C" D'`)
       SetVar("qpars", obj(pars))
@@ -66,6 +65,43 @@ tree:
     list:
     - value: "100"
       var: counter
+    - value: "101"
+      var: app
+- name: append-to-variable
+  values:
+    name: app
+    sep: "0"
+    subst: "1"
+    value: "12"
+- name: append-to-variable
+  values:
+    name: app
+    sep: "1"
+    subst: "1"
+    value: "777"
+- name: append-to-variable
+  values:
+    name: app2
+    sep: ""
+    subst: "1"
+    value: '#counter#'
+- name: append-to-variable
+  values:
+    name: app2
+    sep: ""
+    subst: "1"
+    value: '#counter#='
+- name: assertions
+  values:
+    list:
+    - cmp: equal
+      not: false
+      value: "1010121777"
+      var: app
+    - cmp: equal
+      not: false
+      value: 100100=
+      var: app2
 - name: source-code
   open: true
   values:

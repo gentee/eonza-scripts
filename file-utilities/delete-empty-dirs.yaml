@@ -1,0 +1,94 @@
+settings:
+  name: delete-empty-dirs
+  title: '#_name#'
+  path: '#.fileutils#'
+  desc: '#_desc#'
+  loglevel: 6
+  help: "@delete-empty-dirs"
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+- name: confirm
+  title: '#delempydirs.confirm#'
+  type: 0
+- name: perpage
+  title: perpage
+  type: 4
+  options:
+    optional: true
+tree:
+- name: source-code
+  values:
+    code: |
+      arr list
+      SetVar("list", obj(list))
+- name: source-code
+  open: true
+  values:
+    code: |-
+      func list {
+          %body%
+      }
+    external: true
+  children:
+  - name: checkbox-list
+    values:
+      columns: []
+      text: '#delempydirs.confirm#'
+      varname: list
+  - name: foreach
+    open: true
+    values:
+      varitem: deldir
+      varname: list
+    children:
+    - name: delete-file
+      values:
+        _ifcond: ""
+        path: '#deldir#'
+- name: foreach-empty-dir
+  open: true
+  values:
+    ignore: '#ignore#'
+    path: '#path#'
+    pattern: '#pattern#'
+    varname: dir
+  children:
+  - name: source-code
+    open: true
+    values:
+      _ifcond: GetVarBool("confirm")
+      code: "obj o = GetVarObj(\"list\")\narr list = arrstr(o)\nlist += GetVar(\"dir\")\nSetVar(\"list\",
+        obj(list))\nint perpage = GetVarInt(\"perpage\")\nif perpage == 0 : perpage
+        = 25\nif *list == perpage {\n     list()\n     arr empty\n     SetVar(\"list\",
+        obj(empty))        \n}\n"
+  - name: delete-file
+    values:
+      _ifcond: '!GetVarBool("confirm")'
+      path: '#dir#'
+- name: source-code
+  values:
+    _ifcond: GetVarBool("confirm")
+    code: |-
+      obj o = GetVarObj("list")
+      arr list = arrstr(o)
+      if *list? : list()
+langs:
+  en:
+    _desc: Delete empty directories
+    _name: Delete Empty Dirs
+    delempydirs.confirm: Confirm Deletion
+  ru:
+    _desc: Удалить пустые директории
+    _name: Удалить пустые директории
+    delempydirs.confirm: Подтвердить удаление
+code: |2+
+

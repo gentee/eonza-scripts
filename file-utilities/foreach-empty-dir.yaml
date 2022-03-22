@@ -1,0 +1,40 @@
+settings:
+  name: foreach-empty-dir
+  title: '#_name#'
+  path: '#.fileutils#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: "@foreach-empty-dir"
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+- name: varname
+  title: '#.varname#'
+  type: 2
+langs:
+  en:
+    _desc: Run commands for each empty directory
+    _name: Foreach Empty Dir
+  ru:
+    _desc: Выполнить команды для каждой пустой директории
+    _name: Цикл для пустых директорий
+code: |
+  map m = {"path": path, "pattern": pattern, "ignore": ignore}
+  handle hpkg = cmdpkg("file-utilities/emptydirs", obj(m))
+  while true {
+      for item in arrstr(cmdvalue(hpkg)) {
+           if *varname? :  SetVar(varname, item)
+            %body%
+      }
+      if cmdfinished(hpkg) : break
+      hpkg = cmdnext(hpkg)
+  }

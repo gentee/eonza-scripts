@@ -1,0 +1,139 @@
+settings:
+  name: duplicate-file-finder
+  title: '#_name#'
+  path: '#.fileutils#'
+  desc: '#_desc#'
+  loglevel: 2
+  help: "@duplicate-file-finder"
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+- name: output
+  title: '#.outputfile#'
+  type: 2
+tree:
+- name: source-code
+  open: true
+  values:
+    code: "str ext = \"txt\"\nstr output = GetVar(\"output\")\nif *output? {\nswitch
+      Ext(output) \ncase \"yaml\" : ext = \"yaml\"\ncase \"json\" {\n      ext = \"json\"\n
+      \     arr.obj list\n      SetVar(\"outlist\", obj(list))\n}\ncase \"html\" :
+      ext = \"html\"\n} else : ext = \"report\"\nSetVar(\"ext\", ext)\n%body%"
+- name: set-variable
+  values:
+    _ifcond: GetVar("ext") == "html"
+    list: []
+    name: out
+    subst: "1"
+    value: |-
+      <html>
+      <body>
+      <table cellpadding="5">
+- name: find-duplicate-files
+  open: true
+  values:
+    ignore: '#ignore#'
+    path: '#path#'
+    pattern: '#pattern#'
+    varname: dup
+  children:
+  - name: append-to-variable
+    values:
+      _ifcond: GetVar("ext") == "yaml"
+      name: out
+      sep: '#.r##.n#'
+      subst: "1"
+      value: |
+        - size: #dup.size#
+          md5: "#dup.md5#",
+          list":
+  - name: source-code
+    values:
+      _ifcond: GetVar("ext") == "json"
+      code: |-
+        arr.obj aobj = arr(GetVarObj("outlist"))
+        aobj += GetVarObj("dup")
+        SetVar("outlist", obj(aobj))
+        %body%
+  - name: append-to-variable
+    values:
+      _ifcond: GetVar("ext") == "html" || GetVar("ext") == "report"
+      name: out
+      sep: '#.r##.n#'
+      subst: "1"
+      value: |-
+        <tr ><td style="border: 1px solid #777;"><b>size: #dup.size#</b></td><td style="border: 1px solid #777;">md5: #dup.md5#</td></tr>
+        <tr ><td colspan="2" style="border: 1px solid #777;">
+  - name: foreach
+    open: true
+    values:
+      _ifcond: 'GetVar("ext") != "json" '
+      varitem: item
+      varname: dup.list
+    children:
+    - name: append-to-variable
+      values:
+        _ifcond: GetVar("ext") == "txt"
+        name: out
+        sep: '#.r##.n#'
+        subst: "1"
+        value: '#dup.size#,#dup.md5#,#item#'
+    - name: append-to-variable
+      values:
+        _ifcond: GetVar("ext") == "yaml"
+        name: out
+        sep: '#.r##.n#'
+        subst: "1"
+        value: '#.s##.s##.s##.s# - "#item#"'
+    - name: append-to-variable
+      values:
+        _ifcond: GetVar("ext") == "html" || GetVar("ext") == "report"
+        name: out
+        sep: '#.r##.n#'
+        subst: "1"
+        value: '#item#<br>'
+  - name: append-to-variable
+    values:
+      _ifcond: GetVar("ext") == "html"
+      name: out
+      sep: '#.r##.n#'
+      subst: "1"
+      value: </td></tr>
+- name: create-report
+  values:
+    _ifcond: GetVar("ext") == "report"
+    body: |-
+      <table cellpadding="5">
+      #out#
+      </table>
+    title: Duplicate Files
+- name: source-code
+  values:
+    _ifcond: GetVar("ext") == "json"
+    code: SetVar("out", Json(GetVarObj("outlist")))
+- name: append-to-variable
+  values:
+    _ifcond: GetVar("ext") == "html"
+    name: out
+    subst: "1"
+    value: </table></body></html>
+- name: write-file
+  values:
+    _ifcond: '*GetVar("output")?'
+    filename: '#output#'
+    name: out
+langs:
+  en:
+    _desc: 'Find and save duplicate files as a list '
+    _name: Duplicate File Finder
+  ru:
+    _desc: Найти и сохранить в виде списка одинаковые файлы
+    _name: Одинаковые файлы

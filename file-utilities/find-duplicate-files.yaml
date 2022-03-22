@@ -1,0 +1,41 @@
+settings:
+  name: find-duplicate-files
+  title: '#_name#'
+  path: '#.fileutils#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: "@find-duplicate-files"
+  helplang: ru
+params:
+- name: path
+  title: '#.path#'
+  type: 2
+- name: pattern
+  title: '#.patternfile#'
+  type: 2
+- name: ignore
+  title: '#.excludefile#'
+  type: 2
+- name: varname
+  title: '#.varname#'
+  type: 2
+langs:
+  en:
+    _desc: Perform actions for the same files
+    _name: Find Duplicate Files
+  ru:
+    _desc: Выполнить действия для одинаковых файлов
+    _name: 'Найти одинаковые файлы '
+code: |
+  map m = {"path": path, "pattern": pattern, "ignore": ignore}
+  handle hpkg = cmdpkg("file-utilities/dupfiles", obj(m))
+  while true {
+      obj v = cmdvalue(hpkg)
+      if IsMap(v) {
+             if *varname? :  SetVar(varname, v)
+             %body%
+     }
+      if cmdfinished(hpkg) : break
+      hpkg = cmdnext(hpkg)
+  }

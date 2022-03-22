@@ -1,0 +1,65 @@
+settings:
+  name: append-to-variable
+  title: '#_name#'
+  path: '#.stdlib#/#.variables#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: append-to-variable
+  helplang: ru
+params:
+- name: name
+  title: '#.varname#'
+  type: 2
+  options:
+    required: true
+    flags: nomacro
+- name: sep
+  title: '#_delimiter#'
+  type: 2
+- name: value
+  title: '#.value#'
+  type: 1
+  options:
+    required: true
+    flags: nomacro
+- name: subst
+  title: '#_subst#'
+  type: 3
+  options:
+    initial: "1"
+    default: "1"
+    type: int
+    items:
+    - title: '#.no#'
+      value: "0"
+    - title: '#_everywhere#'
+      value: "3"
+    - title: '#_onlyvalue#'
+      value: "1"
+    - title: '#_onlyvar#'
+      value: "2"
+langs:
+  en:
+    _delimiter: Delimiter
+    _desc: Append text to variable value
+    _everywhere: Everywhere
+    _name: Append To Variable
+    _onlyvalue: Only in the Value
+    _onlyvar: Only in the Variable Name
+    _subst: Substitute Variable Values
+  ru:
+    _delimiter: Разделитель
+    _desc: Добавить текст к значению переменной
+    _everywhere: Везде
+    _name: Добавить к переменной
+    _onlyvalue: Только в значении
+    _onlyvar: Только в имени переменной
+    _subst: Заменить значения переменных
+code: |
+  if subst & 1 == 1 :  value = Macro(value)
+  if subst & 2 == 2 : name = Macro(name)
+  str val = GetVarRaw(name)
+  if *sep? && *val? && !HasSuffix(val, sep) : val += sep
+  val += value
+  SetVar(name, val)
