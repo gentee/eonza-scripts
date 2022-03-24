@@ -26,7 +26,7 @@ langs:
     _name: Find Duplicate Files
   ru:
     _desc: Выполнить действия для одинаковых файлов
-    _name: 'Найти одинаковые файлы '
+    _name: Найти одинаковые файлы
 code: |
   map m = {"path": path, "pattern": pattern, "ignore": ignore}
   handle hpkg = cmdpkg("file-utilities/dupfiles", obj(m))
