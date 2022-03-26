@@ -60,6 +60,19 @@ tree:
         not: false
         value: A "B C" D
         var: qpars[6]
+- name: function
+  open: true
+  values:
+    funcname: My Func
+  children:
+  - name: set-variable
+    values:
+      list:
+      - func: append
+        param: '#counter#+#fpar1#+#fpar2#'
+      name: fret
+      subst: "1"
+      value: ""
 - name: set-variables
   values:
     list:
@@ -67,6 +80,22 @@ tree:
       var: counter
     - value: "101"
       var: app
+    - value: ""
+      var: fpar1
+    - value: ""
+      var: fpar2
+- name: call-function
+  values:
+    funcname: My Func
+    params: []
+- name: call-function
+  values:
+    funcname: My Func
+    params:
+    - value: "1"
+      var: fpar1
+    - value: "2"
+      var: fpar2
 - name: append-to-variable
   values:
     name: app
@@ -102,6 +131,10 @@ tree:
       not: false
       value: 100100=
       var: app2
+    - cmp: equal
+      not: false
+      value: 100++100+1+2
+      var: fret
 - name: source-code
   open: true
   values:
