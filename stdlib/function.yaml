@@ -1,0 +1,27 @@
+settings:
+  name: function
+  title: '#_name#'
+  path: '#.stdlib#/#.programming#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: function
+  helplang: ru
+params:
+- name: funcname
+  title: '#_funcname#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Define a function
+    _funcname: Function Name
+    _name: Function
+  ru:
+    _desc: Определить функцию
+    _funcname: Имя функции
+    _name: Функция
+code: "func Function_%funcname%(str list) {\n    if *list > 2 {\n         obj vobj
+  = JsonToObj(list) \n         for vitem in vobj {\n              SetVar(item(vitem,
+  \"var\").str(), item(vitem, \"value\").str())\n         }\n    }\n   %body%\n}"

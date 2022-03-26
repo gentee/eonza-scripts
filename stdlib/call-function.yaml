@@ -1,0 +1,36 @@
+settings:
+  name: call-function
+  title: '#_name#'
+  path: '#.stdlib#/#.programming#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: call-function
+  helplang: ru
+params:
+- name: funcname
+  title: '#_funcname#'
+  type: 2
+  options:
+    required: true
+- name: params
+  title: '#.parameters#'
+  type: 5
+  options:
+    list:
+    - name: var
+      title: '#.varname#'
+      type: 2
+    - name: value
+      title: '#.value#'
+      type: 1
+langs:
+  en:
+    _desc: Call the function
+    _funcname: Function Name
+    _name: Call Function
+  ru:
+    _desc: Вызвать функцию
+    _funcname: Имя функции
+    _name: Вызвать функцию
+code: 'Function_%funcname%(%params%) '
