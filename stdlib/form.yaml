@@ -37,6 +37,8 @@ params:
           value: "9"
         - title: '#.checklist#'
           value: "10"
+        - title: '#.buttonlink#'
+          value: "11"
     - name: text
       title: '#.text#'
       type: 2
