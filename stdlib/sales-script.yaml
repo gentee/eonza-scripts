@@ -1,0 +1,36 @@
+settings:
+  name: sales-script
+  title: '#_name#'
+  desc: '#_desc#'
+  path: "#.stdlib#/#.forms#"
+  help: sales-script
+  helplang: ru       
+  loglevel: 6
+  unrun: true
+params:
+- name: firstpage
+  title: '#_firstpage#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Start sales script
+    _firstpage: First Page
+    _name: Sales Script
+  ru:
+    _desc: Запустить скрипт продаж
+    _firstpage: Первая страница
+    _name: Скрипт продаж
+code: |-
+  str page = firstpage
+  str state
+  %titles%
+  while true {
+      %sales%
+      default: error(1, "unknown page \{page}")
+       page = GetVar("sales_page")
+       state = GetVar("sales_state")
+       if state == "finish" : break
+       if state == "restart" : page = firstpage
+  }

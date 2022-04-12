@@ -1,0 +1,151 @@
+settings:
+  name: demo-sales-script
+  title: '#_name#'
+  loglevel: 6
+tree:
+- name: sales-script-page
+  values:
+    answers:
+    - page: more
+      title: '#welcome_more#'
+    - page: price
+      title: ""
+    - page: end
+      title: '#link_end#'
+    funcname: welcome
+    text: |
+      <div style="color:#f00;">#welcome_text#</div>
+    title: '#welcome#'
+- name: sales-script-page
+  values:
+    answers: {}
+    funcname: end
+    text: '#end_text#'
+    title: '#end_title#'
+- name: sales-script-page
+  values:
+    answers:
+    - page: create-script
+      title: '#link_create_script#'
+    - page: price
+      title: ""
+    - page: docs
+      title: '#link_docs#'
+    funcname: more
+    text: '#more_text#'
+    title: '#more_title#'
+- name: sales-script-page
+  values:
+    answers:
+    - page: create-script
+      title: ""
+    - page: end
+      title: ""
+    - page: docs
+      title: ""
+    funcname: price
+    text: '#price_text#'
+    title: '#price_title#'
+- name: sales-script-page
+  values:
+    answers:
+    - page: create-script
+      title: ""
+    - page: price
+      title: '#how_much#'
+    - page: end
+      title: '#link_end#'
+    funcname: docs
+    text: '#docs_text#'
+    title: '#docs_title#'
+- name: sales-script-page
+  values:
+    answers:
+    - page: price
+      title: ""
+    - page: docs
+      title: ""
+    - page: end
+      title: ""
+    funcname: create-script
+    text: '#create_text#'
+    title: '#create_title#'
+- name: sales-script
+  values:
+    firstpage: welcome
+langs:
+  en:
+    _name: Demo Sales Script
+    create_text: |-
+      **Step 1**. Define the content of all pages for the sales script;
+
+      **Step 2**. Create a new script in Eonza and add a **Sales Script Page** command for each page. Specify text there in Markdown or HTML format. Also add the answer options you want, indicating the relevant pages;
+
+      **Step 3**. Add the command **Sales Script** and specify the name of the first page there.
+    create_title: How to create a sales script
+    docs_text: "You can find documentation on creating sales scripts at [eonza.org](https://www.eonza.org).\n\n-
+      [How to create a sales script](https://www.eonza.org/docs/how-to-create-sales-script.html)\n-
+      The [Sales Script Page](https://www.eonza.org/scripts/sales-script-page.html)
+      command\n- The [Sales Script](https://www.eonza.org/scripts/sales-script.html)
+      command "
+    docs_title: Online documentation
+    end_text: |-
+      To end the sales script, click the **Finish** button.
+
+      If you want to start the sales script again, click the **Restart** button.
+    end_title: How to end the script
+    how_much: How much does it cost to create my own sales script?
+    link_create_script: How to create a script
+    link_docs: Need more documentation
+    link_end: Finish the sales script
+    more_text: "The **Eonza** program allows you to create:\n\n- sales scripts;\n-
+      telephone scripts;\n- guides to actions according to a certain algorithm.\n
+      \ \nThe scripts you create can be exported, shared with other people, and used
+      on other computers."
+    more_title: ' Learn more'
+    price_text: Since **Eonza** is a free program, you can create your own scripts
+      and use them absolutely **free**.
+    price_title: Cost of creating sales scripts
+    welcome: Welcome
+    welcome_more: I want to know more
+    welcome_text: You have started the sales demo script. Choose one of the items.
+  ru:
+    _name: Демонстрационный скрипт продаж
+    create_text: |-
+      **Шаг 1**. Определите содержимое всех страниц для скрипта продаж;
+
+      **Шаг 2**. Создайте в программе Eonza новый скрипт и добавьте для каждой страницы команду **Страница скрипта продаж**. Укажите там текст в формате Markdown или HTML. Также добавьте нужные варианты ответов с указанием соответствующих страниц;
+
+      **Шаг 3**. Добавьте команду **Скрипт продаж** и укажите там имя первой страницы.
+    create_title: Как создать скрипт продаж
+    docs_text: |
+      Вы можете найти документацию по созданию скриптов продаж на сайте [eonza.org](https://www.eonza.org).
+
+      - [Как создать скрипт продаж](https://www.eonza.org/ru/docs/how-to-create-sales-script.html)
+      - Команда [Страница скрипта продаж](https://www.eonza.org/ru/scripts/sales-script-page.html)
+      - Команда [Скрипт продаж](https://www.eonza.org/ru/scripts/sales-script.html)
+    docs_title: Онлайн документация
+    end_text: |-
+      Чтобы закончить скрипт продаж, нажмите кнопку **Закончить**.
+
+      Если вы хотите начать скрипт продаж заново, то нажмите на кнопку **Начать заново**.
+    end_title: Как закончить работу скрипта
+    how_much: Сколько стоит создание собственного скрипта продаж?
+    link_create_script: Как создать скрипт
+    link_docs: Нужно больше документации
+    link_end: Закончить работу скрипта продаж
+    more_text: |-
+      Программа **Eonza** позволяет создавать:
+
+      - скрипты продаж;
+      - телефонные скрипты;
+      - руководства к действиям по определённому алгоритму.
+
+      Создаваемые скрипты можно экспортировать, передавать другим людям и использовать на других компьютерах.
+    more_title: Узнать больше
+    price_text: Так как  программа **Eonza** - это бесплатная программа, то вы можете
+      создавать свои срипты и пользоваться ими абсолютно **бесплатно**.
+    price_title: Стоимость создания скриптов продаж
+    welcome: Приветствие
+    welcome_more: Я хочу узнать больше
+    welcome_text: Вы запустили демонстрационный скрипт продаж. Выберите один из пунктов.
