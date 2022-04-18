@@ -1,0 +1,134 @@
+settings:
+  name: demo-flowchart
+  title: '#_name#'
+  loglevel: 3
+tree:
+- name: set-variables
+  values:
+    list:
+    - value: "0"
+      var: num
+- name: flowchart-element
+  open: true
+  values:
+    answers:
+    - page: div
+      title: ""
+    - page: mul
+      title: ""
+    - page: add
+      title: ""
+    - page: sub
+      title: ""
+    funcname: initial
+    text: '#lng.value#: **#num#**'
+    title: '#lng.initial#'
+  children:
+  - name: form
+    values:
+      list:
+      - options: ""
+        text: '#enternum#'
+        type: "2"
+        var: num
+  - name: source-code
+    values:
+      code: SetVar("num", GetVarInt("num"))
+- name: flowchart-element
+  open: true
+  values:
+    answers:
+    - page: div
+      title: ""
+    - page: mul
+      title: ""
+    - page: add
+      title: ""
+    - page: sub
+      title: ""
+    funcname: mul
+    text: '#lng.value#: **#num#**'
+    title: '#lng.mul#'
+  children:
+  - name: source-code
+    values:
+      code: SetVar("num", GetVarInt("num")*3)
+- name: flowchart-element
+  open: true
+  values:
+    answers:
+    - page: div
+      title: ""
+    - page: mul
+      title: ""
+    - page: add
+      title: ""
+    - page: sub
+      title: ""
+    funcname: div
+    text: '#lng.value#: **#num#**'
+    title: '#lng.div#'
+  children:
+  - name: source-code
+    values:
+      code: SetVar("num", GetVarInt("num")/2)
+- name: flowchart-element
+  open: true
+  values:
+    answers:
+    - page: div
+      title: ""
+    - page: mul
+      title: ""
+    - page: add
+      title: ""
+    - page: sub
+      title: ""
+    funcname: add
+    text: '#lng.value#: **#num#**'
+    title: '#lng.add#'
+  children:
+  - name: source-code
+    values:
+      code: SetVar("num", GetVarInt("num") + 23)
+- name: flowchart-element
+  open: true
+  values:
+    answers:
+    - page: div
+      title: ""
+    - page: mul
+      title: ""
+    - page: add
+      title: ""
+    - page: sub
+      title: ""
+    funcname: sub
+    text: '#lng.value#: **#num#**'
+    title: '#lng.sub#'
+  children:
+  - name: source-code
+    values:
+      code: SetVar("num", GetVarInt("num") - 18)
+- name: flowchart
+  values:
+    firstpage: initial
+langs:
+  en:
+    _name: Demo Flowchart
+    enternum: Enter a number
+    lng.add: Addition 23
+    lng.div: Division by 2
+    lng.initial: Initial Value
+    lng.mul: Multiplication by 3
+    lng.sub: Subtraction 18
+    lng.value: Current value
+  ru:
+    _name: "Блок-схема (демо)"
+    enternum: Введите число
+    lng.add: Прибавление 23
+    lng.div: Деление на 2
+    lng.initial: Начальное значение
+    lng.mul: Умножение на 3
+    lng.sub: Вычитание 18
+    lng.value: Текущее значение

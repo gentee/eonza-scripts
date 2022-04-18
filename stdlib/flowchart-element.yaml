@@ -1,0 +1,163 @@
+settings:
+  name: flowchart-element
+  title: '#_name#'
+  path: '#.stdlib#/#.forms#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: flowchart-element
+  helplang: ru
+params:
+- name: funcname
+  title: '#.name#'
+  type: 2
+  options:
+    required: true
+    flags: nomacro
+- name: title
+  title: '#.title#'
+  type: 2
+- name: text
+  title: '#.text#'
+  type: 1
+  options:
+    required: true
+    flags: preview nomacro
+- name: answers
+  title: '#_answer#'
+  type: 5
+  options:
+    list:
+    - name: title
+      title: '#.text#'
+      type: 2
+    - name: page
+      title: '#_name#'
+      type: 2
+tree:
+- name: set-variable
+  values:
+    _ifcond: '*GetVar("title") == 0'
+    list: []
+    name: title
+    subst: "1"
+    value: '#funcname#'
+- name: parse-json
+  values:
+    resultvar: options
+    value: '#answers#'
+- name: foreach
+  open: true
+  values:
+    varitem: item
+    varname: options
+  children:
+  - name: convert-json-to-variable
+    values:
+      json: |-
+        {
+            "type": "11",
+            "var": "btnlink",
+            "text": "#item.title#",
+            "options": "{\"initial\": \"#item.page#\"}"
+        }
+      varname: dynitem
+  - name: append-to-variable
+    values:
+      name: dynamic
+      sep: ',#.r##.n#'
+      subst: "1"
+      value: '#dynitem#'
+- name: set-variables
+  values:
+    list:
+    - type: "2"
+      value: |-
+        <div style="padding: 1rem 0rem 0rem;">&nbsp;
+        </div>
+      var: htmldiv
+    - type: "2"
+      value: <h1>#title#</h1>
+      var: header
+    - value: ""
+      var: btnlink
+    - value: ""
+      var: btn
+    - value: |-
+        [
+           #dynamic#
+        ]
+      var: options
+- name: if.eonza
+  open: true
+  values:
+    list:
+    - cmp: contains
+      next: "0"
+      not: true
+      value: <
+      var: text
+    - cmp: contains
+      next: "0"
+      not: true
+      value: '>'
+      var: text
+  children:
+  - name: markdown-to-html
+    values:
+      resultvar: text
+      varname: text
+- name: form
+  values:
+    list:
+    - options: ""
+      text: ""
+      type: "6"
+      var: header
+    - options: ""
+      text: ""
+      type: "6"
+      var: text
+    - options: ""
+      text: ""
+      type: "6"
+      var: htmldiv
+    - options: ""
+      text: ""
+      type: "8"
+      var: options
+    - options: ""
+      text: ""
+      type: "6"
+      var: htmldiv
+    - options: '{"initial": "restart"}'
+      text: '#sales.restart#'
+      type: "7"
+      var: btn
+    - options: '{"initial": "finish"}'
+      text: '#sales.finish#'
+      type: "7"
+      var: btn
+- name: source-code
+  values:
+    code: |
+      ResultVar("flowchart_page", GetVar("btnlink"))
+      ResultVar("flowchart_state", GetVar("btn"))
+langs:
+  en:
+    _answer: Answer options
+    _desc: Define a flowchart element
+    _name: Flowchart Element
+    sales.finish: Finish
+    sales.restart: Restart
+  ru:
+    _answer: Варианты ответов
+    _desc: Определить элемент блок-схемы
+    _name: Элемент блок схемы
+    sales.finish: Закончить
+    sales.restart: Начать заново
+code: "%body%\ntext = Macro(text)\nmap ? titles\nobj vobj = JsonToObj(answers)\narr.map
+  \ ret\nfor vitem in vobj {\n     str atitle = Macro(item(vitem, \"title\").str())\n
+  \    str page = item(vitem, \"page\").str()\n     if *atitle == 0 : atitle = titles[page]\n
+  \    map mitem = {\n           \"page\": page,\n           \"title\": ?( *atitle?,
+  atitle, page) \n     }\n     ret += mitem\n}\nanswers = Json(obj(ret))"

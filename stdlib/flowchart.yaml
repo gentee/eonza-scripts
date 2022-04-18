@@ -1,0 +1,36 @@
+settings:
+  name: flowchart
+  title: '#_name#'
+  path: '#.stdlib#/#.forms#'
+  desc: '#_desc#'
+  loglevel: 6
+  unrun: true
+  help: flowchart
+  helplang: ru
+params:
+- name: firstpage
+  title: '#_firstpage#'
+  type: 2
+  options:
+    required: true
+langs:
+  en:
+    _desc: Start flowchart
+    _firstpage: First Element
+    _name: Flowchart
+  ru:
+    _desc: Запустить блок-схему
+    _firstpage: Первый элемент
+    _name: Блок-схема
+code: |-
+  str page = firstpage
+  str state
+  %titles%
+  while true {
+      %sales%
+      default: error(1, "unknown page \{page}")
+       page = GetVar("flowchart_page")
+       state = GetVar("flowchart_state")
+       if state == "finish" : break
+       if state == "restart" : page = firstpage
+  }

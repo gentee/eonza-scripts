@@ -110,7 +110,7 @@ langs:
     welcome_more: I want to know more
     welcome_text: You have started the sales demo script. Choose one of the items.
   ru:
-    _name: Демонстрационный скрипт продаж
+    _name: "Скрипт продаж (демо)"
     create_text: |-
       **Шаг 1**. Определите содержимое всех страниц для скрипта продаж;
 
