@@ -145,15 +145,15 @@ tree:
       ResultVar("flowchart_state", GetVar("btn"))
 langs:
   en:
-    _answer: Answer options
+    _answer: Next actions
     _desc: Define a flowchart element
     _name: Flowchart Element
     sales.finish: Finish
     sales.restart: Restart
   ru:
-    _answer: Варианты ответов
+    _answer: Следующие действия
     _desc: Определить элемент блок-схемы
-    _name: Элемент блок схемы
+    _name: Элемент блок-схемы
     sales.finish: Закончить
     sales.restart: Начать заново
 code: "%body%\ntext = Macro(text)\nmap ? titles\nobj vobj = JsonToObj(answers)\narr.map
