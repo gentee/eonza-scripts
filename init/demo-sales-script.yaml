@@ -1,7 +1,7 @@
 settings:
   name: demo-sales-script
   title: '#_name#'
-  loglevel: 6
+  loglevel: 2
 tree:
 - name: sales-script-page
   values:

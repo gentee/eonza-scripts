@@ -1,7 +1,7 @@
 settings:
   name: demo-flowchart
   title: '#_name#'
-  loglevel: 3
+  loglevel: 2
 tree:
 - name: set-variables
   values:
